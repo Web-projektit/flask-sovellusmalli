@@ -39,4 +39,4 @@ nosetests.xml
 *.sqlite
 
 # Virtual environment
-venv
+.venv
