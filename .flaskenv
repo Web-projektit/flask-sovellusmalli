@@ -1,0 +1,3 @@
+FLASK_APP="flasky"
+FLASK_DEBUG=1
+FLASK_CONFIG="production"
