@@ -40,7 +40,11 @@ nosetests.xml
 
 # Virtual environment
 .venv
-.env
+# .env
 .vscode
 .gitignore_org.txt
 .gitignore_heroku.txt
+migrations_8h
+migrations_8d
+migrations_development
+migrations_kehitys_8h
