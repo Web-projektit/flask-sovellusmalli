@@ -37,6 +37,11 @@ class LocalConfig(Config):
     SQLALCHEMY_ECHO = "debug"
     # WTF_CSRF_ENABLED = False
 
+class HerokuConfig(Config):
+    SQLALCHEMY_DATABASE_URI = os.environ.get('CLEARDB_DATABASE_URL')
+    SQLALCHEMY_ECHO = "debug"
+    # WTF_CSRF_ENABLED = False    
+
 class TestingConfig(Config):
     TESTING = True
     SQLALCHEMY_DATABASE_URI = os.environ.get('TEST_DATABASE_URL') or \
@@ -53,6 +58,7 @@ config = {
     'testing': TestingConfig,
     'production': ProductionConfig,
     'local': LocalConfig,
+    'heroku': HerokuConfig,
 
     'default': DevelopmentConfig
 }
