@@ -2,12 +2,20 @@ from threading import Thread
 from flask import current_app, render_template
 from flask_mail import Message
 from . import mail
-
+import sys
 
 def send_async_email(app, msg):
     with app.app_context():
-        mail.send(msg)
-
+        try:
+            mail.send(msg)
+        except Exception as ex:
+            ex_name = ex.__class__.__name__
+            if ex_name == 'SMTPSenderRefused':
+                sys.stderr.write(ex_name)
+            elif ex_name == 'SMTPAuthenticationError':
+                sys.stderr.write(ex_name)
+            else:
+                sys.stderr.write('Sähköpostilähetysvirhe')    
 
 def send_email(to, subject, template, **kwargs):
     app = current_app._get_current_object()
