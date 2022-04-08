@@ -3,20 +3,18 @@ from flask_bootstrap import Bootstrap
 from flask_mail import Mail
 from flask_moment import Moment
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.pool import QueuePool
-
 from flask_login import LoginManager
 from config import config
 import os
-
-bootstrap = Bootstrap()
-mail = Mail()
-moment = Moment()
+from sqlalchemy.pool import QueuePool
 if 'DYNO' in os.environ:
     # Lost connection to MySQL server during query (ClearDB)
     db = SQLAlchemy(engine_options={"pool_size": 10, "poolclass":QueuePool, "pool_pre_ping":True})
 else:
     db = SQLAlchemy()
+bootstrap = Bootstrap()
+mail = Mail()
+moment = Moment()
 login_manager = LoginManager()
 login_manager.login_view = 'auth.login'
 
