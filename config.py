@@ -46,6 +46,7 @@ class HerokuConfig(Config):
     # MAIL_USE_SSL = os.environ.get('MAILTRAP_MAIL_USE_SSL', 'false')   
     MAIL_USERNAME = os.environ.get('SENDGRID_MAIL_USERNAME')
     MAIL_PASSWORD = os.environ.get('SENDGRID_MAIL_PASSWORD')
+    FLASKY_MAIL_SENDER = 'wohjelmointi@gmail.com'
     # WTF_CSRF_ENABLED = False    
 
 class TestingConfig(Config):
