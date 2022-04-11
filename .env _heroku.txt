@@ -1,0 +1,7 @@
+# Sendgrid
+SENDGRID_MAIL_SERVER = 'smtp.sendgrid.net'
+SENDGRID_MAIL_PORT = 587
+SENDGRID_MAIL_USERNAME = apikey
+SENDGRID_MAIL_PASSWORD = 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
+SP_ADMIN = jukka.aula@omnia.fi
+SECRET_KEY = 'hard to guess string' 

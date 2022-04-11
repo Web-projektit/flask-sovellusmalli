@@ -14,7 +14,7 @@ class Config:
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
     FLASKY_MAIL_SUBJECT_PREFIX = '[Flaskprojekti]'
     SP_MAIL_SENDER = 'Flaskprojekti Admin <flaskprojekti@example.com>'
-    FLASKY_ADMIN = os.environ.get('FP_ADMIN')
+    FLASKY_ADMIN = os.environ.get('SP_ADMIN')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     @staticmethod

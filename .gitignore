@@ -40,8 +40,8 @@ nosetests.xml
 
 # Virtual environment
 .venv
-.env
-.env_heroku_local
+# .env
+# .env_heroku_local
 .vscode
 .gitignore_github.txt
 .gitignore_heroku.txt
