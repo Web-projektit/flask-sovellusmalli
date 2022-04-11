@@ -15,7 +15,7 @@ def send_async_email(app, msg):
             elif ex_name == 'SMTPAuthenticationError':
                 sys.stderr.write(ex_name)
             else:
-                sys.stderr.write('Sähköpostilähetysvirhe')    
+                sys.stderr.write('Sahkopostilahetysvirhe')    
 
 def send_email(to, subject, template, **kwargs):
     app = current_app._get_current_object()
