@@ -11,12 +11,7 @@ def send_async_email(app, msg):
             sys.stderr.write('Sahkoposti lahetetty\n')
         except Exception as ex:
             ex_name = ex.__class__.__name__
-            if ex_name == 'SMTPSenderRefused':
-                sys.stderr.write(ex_name + '\n')
-            elif ex_name == 'SMTPAuthenticationError':
-                sys.stderr.write(ex_name + '\n')
-            else:
-                sys.stderr.write('Sahkopostilahetysvirhe\n')    
+            sys.stderr.write('Sahkopostilahetysvirhe: ' + ex_name + '\n')
 
 def send_email(to, subject, template, **kwargs):
     app = current_app._get_current_object()
