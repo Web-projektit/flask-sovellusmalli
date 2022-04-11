@@ -40,12 +40,12 @@ class LocalConfig(Config):
 class HerokuConfig(Config):
     SQLALCHEMY_DATABASE_URI = os.environ.get('CLEARDB_DATABASE_URL')
     SQLALCHEMY_ECHO = "debug"
-    MAIL_SERVER = os.environ.get('MAILTRAP_MAIL_SERVER', 'smtp.mailtrap.io')
-    MAIL_PORT = int(os.environ.get('MAILTRAP_MAIL_PORT', '2525'))
-    MAIL_USE_TLS = os.environ.get('MAILTRAP_MAIL_USE_TLS', 'true')
+    MAIL_SERVER = os.environ.get('SENDGRID_MAIL_SERVER', 'smtp.mailtrap.io')
+    MAIL_PORT = int(os.environ.get('SENDGRID_MAIL_PORT', '587'))
+    MAIL_USE_TLS = os.environ.get('SENDGRID_MAIL_USE_TLS', 'true')
     # MAIL_USE_SSL = os.environ.get('MAILTRAP_MAIL_USE_SSL', 'false')   
-    MAIL_USERNAME = os.environ.get('MAILTRAP_MAIL_USERNAME')
-    MAIL_PASSWORD = os.environ.get('MAILTRAP_MAIL_PASSWORD')
+    MAIL_USERNAME = os.environ.get('SENDGRID_MAIL_USERNAME')
+    MAIL_PASSWORD = os.environ.get('SENDGRID_MAIL_PASSWORD')
     # WTF_CSRF_ENABLED = False    
 
 class TestingConfig(Config):
