@@ -1,4 +1,4 @@
-.invalid-feedback{
+.invalid-feedback,.help-block{
     color:red;
     display:inline-block;
     font-size:1rem;
