@@ -41,8 +41,6 @@ nosetests.xml
 # Virtual environment
 .venv
 .env
-env_heroku_local.txt
-env_heroku.txt
 .vscode
 migrations_8h
 migrations_8d
