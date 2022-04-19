@@ -42,6 +42,8 @@ nosetests.xml
 .venv
 .env
 .vscode
+envvars.txt
+heroku_configvars.txt
 migrations_8h
 migrations_8d
 migrations_development
