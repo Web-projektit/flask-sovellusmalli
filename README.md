@@ -1,7 +1,7 @@
-Flask-sovellus
-==============
+Flask-sovellusmalli
+===================
 
-Tämä on Flask-sovellusrunko, jota voi käyttää omien Flask-sovellusten kehittämiseen. Se perustuu Miguel Grinberg kirjan Flask Web Development, second edition, lukuun 10.
+Tämä on Flask-sovellusmalli, joka soveltuu Flask-sovellusten kehittämiseen. Se perustuu Miguel Grinberg kirjan Flask Web Development, second edition, lukuun 10.
 
 Huom. wtf.quick_form tarvitsee flask-bootstrap4-kirjaston, mutta muuten muotoilu perustuu
 bootstrap 5-versioon, ks. base.html:
