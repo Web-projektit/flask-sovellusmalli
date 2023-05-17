@@ -1,10 +1,9 @@
-from flask import render_template, redirect, request, url_for, flash, \
-    current_app, jsonify, make_response
+from flask import render_template, redirect, request, \
+    url_for, flash, current_app, jsonify, make_response, \
+    send_from_directory
 from flask_login import (
-    login_user, 
-    logout_user, 
-    login_required, 
-    current_user)
+    login_user,logout_user, 
+    login_required, current_user )
 from . import reactapi
 from .. import db
 from ..models import User
@@ -14,11 +13,16 @@ from flask_cors import cross_origin
 from flask_wtf.csrf import generate_csrf,CSRFError
 import sys
 
+# toimisi: http://localhost:5000/static/projektit_react/react-sovellusmalli/favicon.ico
+# ei toimi: http://localhost:5000/projektit_react/react-sovellusmalli/manifest.json
+# react_polku = 'static/projektit_react/react-sovellusmalli'
+# react_static = react_polku + '/static'
+
 def createResponse(message):
     # CORS:n vaatimat Headerit
     default_origin = 'http://localhost:3000'
     origin = request.headers.get('Origin',default_origin)
-    response = make_response(jsonify(message))    
+    response = make_response(jsonify(message))  
     response.headers.set('Access-Control-Allow-Credentials','true')
     response.headers.set('Access-Control-Allow-Origin',origin) 
     return response
@@ -36,6 +40,12 @@ def page_not_allowed(e):
     return createResponse(message)
 
 
+@reactapi.app_errorhandler(404)
+def page_not_found(e):
+    message = {'virhe':'Kohdeosoitetta ei löydy.'}
+    return createResponse(message)
+
+
 @reactapi.before_app_request
 def before_request():
     if current_user.is_authenticated \
@@ -45,6 +55,17 @@ def before_request():
             and request.endpoint != 'static':
         return "Unconfirmed user"
 
+# Reactin käynnistäminen Flaskistä
+# Serve the React app's index.html file
+'''@reactapi.route('/')
+def serve_index():
+    return send_from_directory(react_polku, path)
+
+# Serve all the static files required by the React app
+@reactapi.route(react_static+'/<path:path>')
+def serve_static(path):
+    return send_from_directory(react_static, path)
+'''
 
 @reactapi.route("/getcsrf", methods=["GET"])
 @cross_origin(supports_credentials=True)
@@ -77,9 +98,9 @@ def logout():
 @cross_origin(supports_credentials=True)
 def signin():
     form = LoginForm()
-    sys.stderr.write(f"\nviews.py,SIGNIN:{form.email.data}'\n")
+    sys.stderr.write(f"\nreactapi, views.py,SIGNIN:{form.email.data}'\n")
     if form.validate_on_submit():
-        sys.stderr.write(f"\nviews.py,SIGNIN, validate_on_submit OK'\n")
+        sys.stderr.write(f"\nreactapi, views.py,SIGNIN, validate_on_submit OK'\n")
         user = User.query.filter_by(email=form.email.data.lower()).first()
         if user is not None and user.verify_password(form.password.data):
             login_user(user, form.remember_me.data)
@@ -195,3 +216,10 @@ def tallennaProfiili():
         response = jsonify(form.errors)
         response.status_code = 200
         return response
+
+'''
+# Handle all other routes by serving the React app's index.html file
+@reactapi.route('/<path:path>')
+def serve_other_routes(path):
+    return send_from_directory(react_polku, 'index.html')
+'''

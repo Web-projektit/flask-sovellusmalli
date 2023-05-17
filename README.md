@@ -12,4 +12,9 @@ https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js
 Lomakevalidointi perustuu bootstrap 5-versioon ja mukautettuun virheilmoitusten poistoon, ks.
 scripts.js
 
+Flask-sovellusmallissa on kaksi Blueprinttiä React-sovellusta varten:
+1. react käynnistää React-sovelluksen (build) Flaskistä 
+2. reactapi tekee käyttäjien autentikoinnin sekä itsenäisessä että
+   Flaskistä käynnistetyssä React-sovelluksessa.
+
 Tekijä: Jukka Aula

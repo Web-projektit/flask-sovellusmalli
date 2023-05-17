@@ -29,7 +29,7 @@ login_manager.login_view = 'auth.login'
 '''Jos blueprintille tarvitaan oma unauthorized_handler, se
 voidaan toteuttaa aiheuttamalla puuttuvalla login_view:llä
 401-virhe ja käsitellä se blueprintin 401-virhekäsittelijällä.'''
-login_manager.blueprint_login_views = {'reactapi':''}
+login_manager.blueprint_login_views = {'reactapi':'','react':''}
 ''' Jos taas yksi login_manager ja sen unauthorized_handler riittävät,
 tämä ei aiheuta 401-virhettä:
 login_manager.unauthorized_handler(kirjautumisvirhe)'''
@@ -60,5 +60,8 @@ def create_app(config_name):
     # Tarvitaanko tätä, toimisiko?
     # CORS(reactapi_blueprint)
     app.register_blueprint(reactapi_blueprint, url_prefix='/reactapi')
+ 
+    from .react import react as react_blueprint
+    app.register_blueprint(react_blueprint)
 
     return app
