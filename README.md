@@ -17,4 +17,11 @@ Flask-sovellusmallissa on kaksi Blueprinttiä React-sovellusta varten:
 2. reactapi tekee käyttäjien autentikoinnin sekä itsenäisessä että
    Flaskistä käynnistetyssä React-sovelluksessa.
 
+Tietokannan päivitys ilman edellistä versiota:
+1.   Poista kansio Migrations
+2.   Poista taulu alembic
+3.   flask db init
+4.   flask db migrate
+5.   flask db upgrade
+
 Tekijä: Jukka Aula
