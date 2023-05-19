@@ -23,11 +23,11 @@ if 'DYNO' in os.environ:
 else:
     db = SQLAlchemy()
 
-if 'WEBSITE_HOSTNAME' not in os.environ:
+# if 'WEBSITE_HOSTNAME' not in os.environ:
     # Running in other environments, enable CSRF protection
-    csrf = CSRFProtect()
+    # csrf = CSRFProtect()
 
-# csrf = CSRFProtect()    
+csrf = CSRFProtect()    
 
 login_manager = LoginManager()
 login_manager.login_view = 'auth.login'
@@ -53,9 +53,9 @@ def create_app(config_name):
     moment.init_app(app)
     db.init_app(app)
     login_manager.init_app(app)
-    if 'WEBSITE_HOSTNAME' not in os.environ:
-        # Running in other environments, enable CSRF protection
-        csrf.init_app(app) 
+    #if 'WEBSITE_HOSTNAME' not in os.environ:
+    # Running in other environments, enable CSRF protection
+    csrf.init_app(app) 
 
     from .main import main as main_blueprint
     app.register_blueprint(main_blueprint)

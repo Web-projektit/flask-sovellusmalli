@@ -82,10 +82,10 @@ class AzureConfig(Config):
     # print("SQLALCHEMY_DATABASE_URI Azure-palvelimelle " + DB_SERVER)
     # SQLALCHEMY_ECHO = True
     SQLALCHEMY_ECHO = "debug"
-    WTF_CSRF_ENABLED = False
+    WTF_CSRF_ENABLED = True
     CSRF_TRUSTED_ORIGINS = ['https://' + os.environ.get('WEBSITE_HOSTNAME')] 
-    WTF_CSRF_SSL_STRICT = True
-    WTF_CSRF_TIME_LIMIT = None
+    # WTF_CSRF_SSL_STRICT = True
+    # WTF_CSRF_TIME_LIMIT = None
     SESSION_COOKIE_SECURE = True
     SESSION_COOKIE_SAMESITE = 'None'
     
