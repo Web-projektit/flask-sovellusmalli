@@ -83,6 +83,7 @@ class AzureConfig(Config):
     # SQLALCHEMY_ECHO = True
     SQLALCHEMY_ECHO = "debug"
     WTF_CSRF_ENABLED = True
+    CSRF_TRUSTED_ORIGINS = ['https://' + os.environ.get('WEBSITE_HOSTNAME')] 
 
 
 config = {
