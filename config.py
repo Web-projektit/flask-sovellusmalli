@@ -88,7 +88,7 @@ class AzureConfig(Config):
     WTF_CSRF_SSL_STRICT = True
     WTF_CSRF_TIME_LIMIT = None
     SESSION_COOKIE_SECURE = True
-    SESSION_COOKIE_SAMESITE = None
+    SESSION_COOKIE_SAMESITE = 'None'
     
 
 
