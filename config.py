@@ -82,6 +82,7 @@ class AzureConfig(Config):
     # print("SQLALCHEMY_DATABASE_URI Azure-palvelimelle " + DB_SERVER)
     # SQLALCHEMY_ECHO = True
     SQLALCHEMY_ECHO = "debug"
+    WTF_CSRF_ENABLED = True
 
 
 config = {
