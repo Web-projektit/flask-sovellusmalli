@@ -30,7 +30,7 @@ def createResponse(message):
 
 @reactapi.app_errorhandler(CSRFError)
 def handle_csrf_error(e):
-    message = {'virhe':f'csrf-token puuttuu {e.description}.'}
+    message = {'virhe':f'csrf-token puuttuu ({e.description}).'}
     return createResponse(message)
 
 
