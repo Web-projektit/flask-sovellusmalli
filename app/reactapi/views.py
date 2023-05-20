@@ -18,6 +18,10 @@ import sys
 # react_polku = 'static/projektit_react/react-sovellusmalli'
 # react_static = react_polku + '/static'
 
+# By redirecting sys.stderr to sys.stdout, both error messages and print statements 
+# will be sent to the standard output stream and captured in the log stream in Azure.
+sys.stderr = sys.stdout
+
 def createResponse(message):
     # CORS:n vaatimat Headerit
     default_origin = 'http://localhost:3000'
@@ -101,7 +105,7 @@ def signin():
     form = LoginForm()
     sys.stderr.write(f"\nreactapi,views.py,SIGNIN data:{form.email.data}\n")
     if form.validate_on_submit():
-        sys.stderr.write(f"\nreactapi, views.py,SIGNIN, validate_on_submit OK'\n")
+        sys.stderr.write(f"\nreactapi, views.py,SIGNIN, validate_on_submit OK\n")
         user = User.query.filter_by(email=form.email.data.lower()).first()
         if user is not None and user.verify_password(form.password.data):
             login_user(user, form.remember_me.data)
