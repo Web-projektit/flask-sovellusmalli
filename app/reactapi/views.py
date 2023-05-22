@@ -101,7 +101,8 @@ def logout():
 @reactapi.route('/signin', methods=['GET','POST'])
 @cross_origin(supports_credentials=True)
 def signin():
-    sys.stderr.write(f"\nreactapi,views.py,SIGNIN headers:{str(request.headers)}\n")
+    print(f"\nPRINT:reactapi,views.py,SIGNIN headers:{str(request.headers)}\n")
+    sys.stderr.write(f"\nWRITE:reactapi,views.py,SIGNIN headers:{str(request.headers)}\n")
     form = LoginForm()
     sys.stderr.write(f"\nreactapi,views.py,SIGNIN data:{form.email.data}\n")
     if form.validate_on_submit():
