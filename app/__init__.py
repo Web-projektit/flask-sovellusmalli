@@ -10,9 +10,16 @@ from flask_wtf.csrf import CSRFProtect
 from config import config
 import logging
 import os
+import sys
 from sqlalchemy.pool import QueuePool
 
 logging.getLogger('flask_cors').level = logging.DEBUG
+logger = logging.getLogger('flask_app')
+logger.setLevel(logging.DEBUG)
+# Configure a logging handler to capture stdout messages
+stdout_handler = logging.StreamHandler(sys.stdout)
+logger.addHandler(stdout_handler)
+
 bootstrap = Bootstrap()
 fa = FontAwesome()
 mail = Mail()
@@ -41,6 +48,10 @@ login_manager.unauthorized_handler(kirjautumisvirhe)'''
 
 def create_app(config_name):
     app = Flask(__name__)
+
+    # Set the Flask app logger to use the created logger
+    app.logger.handlers = logger.handlers
+    app.logger.addHandler(logging.StreamHandler()) 
      # reactia varten
     CORS(app,expose_headers=["Content-Type","X-CSRFToken"])
     app.config.from_object(config[config_name])

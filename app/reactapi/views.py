@@ -56,8 +56,9 @@ def page_not_found(e):
 def normalize_csrf_header():
     csrf_header = request.headers.get('X-Csrftoken')
     if csrf_header is not None:
-        request.headers['X-CSRFToken'] = csrf_header
-
+        # request.headers['X-CSRFToken'] = csrf_header
+        request.environ['HTTP_X_CSRFTOKEN'] = csrf_header
+        
 
 @reactapi.before_app_request
 def before_request():
