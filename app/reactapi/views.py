@@ -86,14 +86,12 @@ app = Flask(__name__)
 
 @app.route('/', methods=['OPTIONS'])
 def handle_preflight():
-    response_headers = {
-        'Access-Control-Allow-Origin': '*',  # Update with your allowed origin(s)
-        'Access-Control-Allow-Methods': 'POST, OPTIONS',  # Update with your allowed method(s)
-        'Access-Control-Allow-Headers': 'X-CSRFToken',  # Update with your allowed header(s)
-    }
-    return '', 204, response_headers
-
-# ... Rest of your Flask application code ...
+    response = jsonify({})
+    response.headers['Content-Type'] = 'multipart/form-data'  # Set the Content-Type header
+    response.headers['Access-Control-Allow-Origin'] = '*'  # Set the appropriate CORS headers
+    response.headers['Access-Control-Allow-Methods'] = 'POST, OPTIONS'
+    response.headers['Access-Control-Allow-Headers'] = 'Content-Type, X-CSRFToken'
+    return response
 
 
 @reactapi.route("/getcsrf", methods=["GET"])
