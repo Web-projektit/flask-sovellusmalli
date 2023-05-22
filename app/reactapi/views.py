@@ -34,7 +34,9 @@ def createResponse(message):
 
 @reactapi.app_errorhandler(CSRFError)
 def handle_csrf_error(e):
-    message = {'virhe':f'csrf-token puuttuu ({e.description}).'}
+    message = {'virhe':f'csrf-token puuttuu ({e.description}), headers:{str(request.headers)}'}
+    print(f"\nPRINT:reactapi CSFRError,SIGNIN headers:{str(request.headers)}\n")
+    sys.stderr.write(f"\nWRITE:reactapi CSFRError, SIGNIN headers:{str(request.headers)}\n")
     return createResponse(message)
 
 
