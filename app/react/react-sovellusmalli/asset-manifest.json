@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/react-sovellusmalli/static/css/main.202de6c0.css",
-    "main.js": "/react-sovellusmalli/static/js/main.6ed4b19b.js",
+    "main.js": "/react-sovellusmalli/static/js/main.b8d0e0a5.js",
     "static/js/787.c0baa784.chunk.js": "/react-sovellusmalli/static/js/787.c0baa784.chunk.js",
     "index.html": "/react-sovellusmalli/index.html",
     "main.202de6c0.css.map": "/react-sovellusmalli/static/css/main.202de6c0.css.map",
-    "main.6ed4b19b.js.map": "/react-sovellusmalli/static/js/main.6ed4b19b.js.map",
+    "main.b8d0e0a5.js.map": "/react-sovellusmalli/static/js/main.b8d0e0a5.js.map",
     "787.c0baa784.chunk.js.map": "/react-sovellusmalli/static/js/787.c0baa784.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.202de6c0.css",
-    "static/js/main.6ed4b19b.js"
+    "static/js/main.b8d0e0a5.js"
   ]
 }
