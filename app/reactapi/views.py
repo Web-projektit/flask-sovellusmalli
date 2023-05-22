@@ -52,6 +52,13 @@ def page_not_found(e):
     return createResponse(message)
 
 
+@reactapi.before_request
+def normalize_csrf_header():
+    csrf_header = request.headers.get('X-Csrftoken')
+    if csrf_header is not None:
+        request.headers['X-CSRFToken'] = csrf_header
+
+
 @reactapi.before_app_request
 def before_request():
     if current_user.is_authenticated \
@@ -72,6 +79,22 @@ def serve_index():
 def serve_static(path):
     return send_from_directory(react_static, path)
 '''
+
+from flask import Flask
+
+app = Flask(__name__)
+
+@app.route('/', methods=['OPTIONS'])
+def handle_preflight():
+    response_headers = {
+        'Access-Control-Allow-Origin': '*',  # Update with your allowed origin(s)
+        'Access-Control-Allow-Methods': 'POST, OPTIONS',  # Update with your allowed method(s)
+        'Access-Control-Allow-Headers': 'X-CSRFToken',  # Update with your allowed header(s)
+    }
+    return '', 204, response_headers
+
+# ... Rest of your Flask application code ...
+
 
 @reactapi.route("/getcsrf", methods=["GET"])
 @cross_origin(supports_credentials=True)

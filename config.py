@@ -86,7 +86,7 @@ class AzureConfig(Config):
     # vrt. CORS(app,expose_headers=["Content-Type","X-CSRFToken"])
     CORS_HEADERS = 'Content-Type'
     CSRF_TRUSTED_ORIGINS = ['https://' + os.environ.get('WEBSITE_HOSTNAME')] 
-    WTF_CSRF_HEADERS= ['X-Csrftoken']
+    # WTF_CSRF_HEADERS= ['X-Csrftoken']
     # WTF_CSRF_SSL_STRICT = True
     # WTF_CSRF_TIME_LIMIT = None
     # SESSION_COOKIE_SECURE = True
