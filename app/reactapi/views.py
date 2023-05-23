@@ -13,11 +13,6 @@ from flask_cors import cross_origin
 from flask_wtf.csrf import generate_csrf,CSRFError
 import sys
 
-# toimisi: http://localhost:5000/static/projektit_react/react-sovellusmalli/favicon.ico
-# ei toimi: http://localhost:5000/projektit_react/react-sovellusmalli/manifest.json
-# react_polku = 'static/projektit_react/react-sovellusmalli'
-# react_static = react_polku + '/static'
-
 # By redirecting sys.stderr to sys.stdout, both error messages and print statements 
 # will be sent to the standard output stream and captured in the log stream in Azure.
 # sys.stderr = sys.stdout
@@ -51,14 +46,15 @@ def page_not_found(e):
     message = {'virhe':'Kohdeosoitetta ei löydy.'}
     return createResponse(message)
 
-
+'''
 @reactapi.before_request
 def normalize_csrf_header():
     csrf_header = request.headers.get('X-Csrftoken')
     if csrf_header is not None:
+        # Huom. request.headersiä ei voi muuttaa suoraan:
         # request.headers['X-CSRFToken'] = csrf_header
         request.environ['HTTP_X_CSRFTOKEN'] = csrf_header
-        
+'''        
 
 @reactapi.before_app_request
 def before_request():
@@ -85,6 +81,7 @@ from flask import Flask
 
 app = Flask(__name__)
 
+'''
 @app.route('/', methods=['OPTIONS'])
 def handle_preflight():
     response = jsonify({})
@@ -93,7 +90,7 @@ def handle_preflight():
     response.headers['Access-Control-Allow-Methods'] = 'POST, OPTIONS'
     response.headers['Access-Control-Allow-Headers'] = 'Content-Type, X-CSRFToken'
     return response
-
+'''
 
 @reactapi.route("/getcsrf", methods=["GET"])
 @cross_origin(supports_credentials=True)
