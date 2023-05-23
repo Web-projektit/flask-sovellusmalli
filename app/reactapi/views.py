@@ -20,7 +20,7 @@ import sys
 
 # By redirecting sys.stderr to sys.stdout, both error messages and print statements 
 # will be sent to the standard output stream and captured in the log stream in Azure.
-sys.stderr = sys.stdout
+# sys.stderr = sys.stdout
 
 def createResponse(message):
     # CORS:n vaatimat Headerit
@@ -142,15 +142,13 @@ def signin():
         else:
             response = jsonify({'virhe':'Väärät tunnukset'})
             # response.status_code = 200
-            return response
-            # return "Väärä salasana"    
+            return response 
     else:
         # print("validointivirheet:"+str(form.errors))
         response = jsonify(form.errors)
         # response.status_code = 200
         return response
-        # return "Virhe lomakkeessa"
-  
+    
 
 @reactapi.route('/signup', methods=['GET', 'POST'])
 @cross_origin(supports_credentials=True)
