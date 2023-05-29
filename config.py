@@ -5,8 +5,8 @@ load_dotenv(os.path.join(basedir, '.env'))
 
 class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'hard to guess string'
-    MAIL_SERVER = os.environ.get('MAILTRAP_MAIL_SERVER', 'smtp.googlemail.com')
-    MAIL_PORT = int(os.environ.get('MAILTRAP_MAIL_PORT', '587'))
+    MAIL_SERVER = os.environ.get('MAILTRAP_MAIL_SERVER', 'smtp.mailtrap.io')
+    MAIL_PORT = int(os.environ.get('MAILTRAP_MAIL_PORT', '2525'))
     MAIL_USE_TLS = os.environ.get('MAILTRAP_MAIL_USE_TLS', 'true').lower() in \
         ['true', 'on', '1']
     MAIL_USERNAME = os.environ.get('MAILTRAP_MAIL_USERNAME')
@@ -40,6 +40,10 @@ class LocalConfig(Config):
     WTF_CSRF_ENABLED = True
     KUVAPALVELU = 'local'
     KUVAPOLKU = 'app/profiilikuvat/'
+    REACT_ORIGIN = 'http://localhost:3000/react-sovellusmalli/'
+    REACT_LOGIN = REACT_ORIGIN + 'login'
+    REACT_UNCONFIRMED = REACT_ORIGIN + 'unconfirmed'
+    REACT_CONFIRMED = REACT_ORIGIN + 'confirmed'
 
 class DevelopmentConfig(LocalConfig):
     KUVAPALVELU = 'S3'

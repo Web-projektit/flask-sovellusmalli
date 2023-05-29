@@ -1,0 +1,13 @@
+Dear {{ user.username }},
+
+Welcome to Flask-sovellus!
+
+To confirm your account please click on the following link:
+
+{{ url_for('reactapi.confirm', token=token, _external=True) }}
+
+Sincerely,
+
+The Flask-sovellus Team
+
+Note: replies to this email address are not monitored.

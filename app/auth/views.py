@@ -1,4 +1,4 @@
-from flask import render_template, redirect, request, url_for, flash
+from flask import current_app, render_template, redirect, request, url_for, flash
 from flask_login import login_user, logout_user, login_required, \
     current_user
 from . import auth
@@ -9,20 +9,38 @@ from .forms import LoginForm, RegistrationForm, ChangePasswordForm,\
     PasswordResetRequestForm, PasswordResetForm, ChangeEmailForm
 
 
+# Huom. Tässä myöskin reactapi-kutsut on otettu huomioon
 @auth.before_app_request
-def before_request():
+    # Huom. 
+    # before_app_request: for all application requests
+    # before_request: applies only to requests that belong to the blueprint
+    #
+def before_app_request():
     if current_user.is_authenticated:
+        # Kirjautunut, tallennetaan last_seen
         current_user.ping()
+        app = current_app._get_current_object()
+        app.logger.debug('auth.before_request,endpoint %s', request.endpoint)
+        app.logger.debug('auth.before_request,blueprint %s', request.blueprint)
         if not current_user.confirmed \
-                and request.endpoint \
-                and request.blueprint != 'auth' \
-                and request.endpoint != 'static':
+            and request.endpoint \
+            and request.endpoint != 'static' \
+            and request.blueprint != 'auth' \
+            and request.blueprint != 'reactapi':
+            # and not request.path.startswith('/static/'):
+            # Huom. is_authenticated: kirjautunut
+            # Kirjautuneet vahvistamattomat käyttäjät ohjataan muualta paitsi
+            # reactapi-blueprintista unconfirmed.html-sivulle
+            app.logger.debug('auth.before_request,path %s', request.path)
             return redirect(url_for('auth.unconfirmed'))
 
 
 @auth.route('/unconfirmed')
 def unconfirmed():
+    app = current_app._get_current_object()
+    app.logger.debug('auth.unconfirmed,endnode: %s',request.endpoint)
     if current_user.is_anonymous or current_user.confirmed:
+        app.logger.debug('auth.unconfirmed,redirect: %s',current_user.is_anonymous)
         return redirect(url_for('main.index'))
     return render_template('auth/unconfirmed.html')
 
@@ -40,7 +58,7 @@ def login():
             next = request.args.get('next')
             if next is None or not next.startswith('/'):
                 next = url_for('main.index')
-                return redirect(next)
+            return redirect(next)
         else:
             flash('Invalid email or password.')
     return render_template('auth/login.html', form=form)
@@ -73,10 +91,14 @@ def register():
 
 @auth.route('/confirm/<token>')
 @login_required
+# Huom. login_required vie login-sivulle, ja kirjautuminen takaisin tänne
 def confirm(token):
+    app = current_app._get_current_object()
+    app.logger.debug('/confirm,confirmed: %s',current_user.confirmed)
     if current_user.confirmed:
         return redirect(url_for('main.index'))
     if current_user.confirm(token):
+        app.logger.debug('/confirm,confirmed here')
         db.session.commit()
         flash('You have confirmed your account. Thanks!')
     else:

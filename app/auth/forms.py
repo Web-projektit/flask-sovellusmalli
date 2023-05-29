@@ -18,9 +18,9 @@ class RegistrationForm(FlaskForm):
                                              Email()])
     username = StringField('Username', validators=[
         DataRequired(), Length(1, 64),
-        Regexp('^[A-Za-z][A-Za-z0-9_.]*$', 0,
-               'Usernames must have only letters, numbers, dots or '
-               'underscores')])
+        Regexp('^[A-Za-z][A-Za-z0-9 _.]*$', 0,
+               'Käyttäjätunnuksessa saa olla vain kirjaimia, numeroita, piste, '
+               'alaviiva tai välilyönti')])
     password = PasswordField('Password', validators=[
         DataRequired(), EqualTo('password2', message='Passwords must match.')])
     password2 = PasswordField('Confirm password', validators=[DataRequired()])
@@ -28,11 +28,11 @@ class RegistrationForm(FlaskForm):
 
     def validate_email(self, field):
         if User.query.filter_by(email=field.data.lower()).first():
-            raise ValidationError('Email already registered.')
+            raise ValidationError('Sähköpostiosoite on varattu.')
 
     def validate_username(self, field):
         if User.query.filter_by(username=field.data).first():
-            raise ValidationError('Username already in use.')
+            raise ValidationError('Käyttäjätunnus on varattu.')
 
 
 class ChangePasswordForm(FlaskForm):
@@ -75,8 +75,8 @@ class ProfileForm(FlaskForm):
     username = StringField('Username', validators=[
         DataRequired(), Length(1, 64),
         Regexp('^[A-Za-z][A-Za-z0-9 _.]*$', 0,
-               'Usernames must have only letters, numbers, dots or '
-               'underscores')])
+               'Käyttäjätunnuksessa saa olla vain kirjaimia, numeroita, piste, '
+               'alaviiva tai välilyönti')])
     password = PasswordField('Password', validators=[
         DataRequired(), EqualTo('password2', message='Passwords must match.')])
     password2 = PasswordField('Confirm password', validators=[DataRequired()])

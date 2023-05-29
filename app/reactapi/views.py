@@ -22,7 +22,9 @@ def createResponse(message):
     default_origin = 'http://localhost:3000'
     origin = request.headers.get('Origin',default_origin)
     response = make_response(jsonify(message))  
-    response.headers.set('Access-Control-Allow-Credentials','true')
+    # Määritetään CORS-alustuksessa
+    # response.headers.set('Access-Control-Allow-Credentials','true')
+    # Jos vaaditaan muuta kuin CORS-alustuksen '*'
     response.headers.set('Access-Control-Allow-Origin',origin) 
     return response
 
@@ -30,13 +32,21 @@ def createResponse(message):
 @reactapi.app_errorhandler(CSRFError)
 def handle_csrf_error(e):
     message = {'virhe':f'csrf-token puuttuu ({e.description}), headers:{str(request.headers)}'}
-    print(f"\nPRINT:reactapi CSFRError,SIGNIN headers:{str(request.headers)}\n")
-    sys.stderr.write(f"\nWRITE:reactapi CSFRError, SIGNIN headers:{str(request.headers)}\n")
+    # print(f"\nPRINT:reactapi CSFRError,SIGNIN headers:{str(request.headers)}\n")
+    sys.stderr.write(f"\nreactapi CSFRError,headers:{str(request.headers)}\n")
     return createResponse(message)
 
 
 @reactapi.app_errorhandler(401)
 def page_not_allowed(e):
+    app = current_app._get_current_object()
+    app.logger.debug('reactapi.app_errorhandler 401,endpoint %s', request.endpoint)
+    app.logger.debug('reactapi.app_errorhandler 401,path %s', request.path)
+    if request.endpoint == 'reactapi.confirm':
+        # Vrt. vastaava Flask route:
+        # login_url = url_for('login', confirm_token=confirm_token, _external=True)
+        redirect_url = app.config['REACT_LOGIN'] + "?next=" + request.path
+        return redirect(redirect_url)
     message = {'virhe':'Kirjautuminen puuttuu.'}
     return createResponse(message)
 
@@ -56,14 +66,28 @@ def normalize_csrf_header():
         request.environ['HTTP_X_CSRFTOKEN'] = csrf_header
 '''        
 
-@reactapi.before_app_request
+@reactapi.before_request
+    # Huom. 
+    # before_app_request: for all application requests
+    # before_request: applies only to requests that belong to the blueprint
+    #
 def before_request():
-    if current_user.is_authenticated \
-            and not current_user.confirmed \
+    if current_user.is_authenticated:
+        # Tallennetaan last_seen
+        current_user.ping()
+        app = current_app._get_current_object()
+        app.logger.debug('reactapi.before_request,endpoint %s', request.endpoint)
+        app.logger.debug('reactapi.before_request,blueprint %s', request.blueprint)
+        if not current_user.confirmed \
             and request.endpoint \
-            and request.blueprint != 'reactapi' \
             and request.endpoint != 'static':
-        return "Unconfirmed user"
+            # and not request.path.startswith('/static/'):
+            # Huom. is_authenticated: kirjautunut
+            # Kirjautuneet vahvistamattomat käyttäjät ohjataan muualta paitsi
+            # reactapi-blueprintista unconfirmed.html-sivulle
+            app.logger.debug('reactapi.before_request,path %s', request.path)
+            # return redirect(url_for('reactapi.unconfirmed'))
+
 
 # Reactin käynnistäminen Flaskistä
 # Serve the React app's index.html file
@@ -92,12 +116,15 @@ def handle_preflight():
     return response
 '''
 
+
 @reactapi.route("/getcsrf", methods=["GET"])
-@cross_origin(supports_credentials=True)
+# Määritetään CORS-alustuksessa
+# @cross_origin(supports_credentials=True)
 def get_csrf():
     token = generate_csrf()
     response = jsonify({"detail": "CSRF cookie set"})
-    response.headers.set('Access-Control-Expose-Headers','X-CSRFToken') 
+    # Määritetään CORS-alustuksessa
+    # response.headers.set('Access-Control-Expose-Headers','X-CSRFToken') 
     response.headers.set("X-CSRFToken", token)
     return response
 
@@ -108,7 +135,8 @@ def get_csrf():
 # Axios on korvattu fetchillä, jotta käyttäjän istunto säilyy eli
 # sen vaatimat evästeet välittyvät selaimelta oikein. 
 @reactapi.route('/logout')
-@cross_origin(supports_credentials=True)
+# Määritetään CORS-alustuksessa
+# @cross_origin(supports_credentials=True)
 # Huom. Header asettuu automaattisesti oikein: 
 # Access-Control-Allow-Origin: http://localhost:3000
 @login_required
@@ -120,10 +148,11 @@ def logout():
 
 
 @reactapi.route('/signin', methods=['GET','POST'])
-@cross_origin(supports_credentials=True)
+# Määritetään CORS-alustuksessa
+# @cross_origin(supports_credentials=True)
 def signin():
-    print(f"\nPRINT:reactapi,views.py,SIGNIN headers:{str(request.headers)}\n")
-    sys.stderr.write(f"\nWRITE:reactapi,views.py,SIGNIN headers:{str(request.headers)}\n")
+    # print(f"\nPRINT:reactapi,views.py,SIGNIN headers:{str(request.headers)}\n")
+    # sys.stderr.write(f"\nWRITE:reactapi,views.py,SIGNIN headers:{str(request.headers)}\n")
     form = LoginForm()
     sys.stderr.write(f"\nreactapi,views.py,SIGNIN data:{form.email.data}\n")
     if form.validate_on_submit():
@@ -134,8 +163,13 @@ def signin():
             # next = request.args.get('next')
             # if next is None or not next.startswith('/'):
             #    next = url_for('main.index')
-            sys.stderr.write('\nviews.py,SIGNIN:OK\n')
-            return 'OK'
+            sys.stderr.write(f"\nviews.py,SIGNIN, request.args:{request.args}\n")
+            next = request.args.get('next')
+            sys.stderr.write(f"\nviews.py,SIGNIN:OK, next:{next}\n")
+            if next is None or not next.startswith('/'):
+                # next = url_for('main.index')
+                return jsonify({'ok':'OK'})
+            return redirect(next)
         else:
             response = jsonify({'virhe':'Väärät tunnukset'})
             # response.status_code = 200
@@ -148,7 +182,8 @@ def signin():
     
 
 @reactapi.route('/signup', methods=['GET', 'POST'])
-@cross_origin(supports_credentials=True)
+# Määritetään CORS-alustuksessa
+# @cross_origin(supports_credentials=True)
 def signup():
     form = RegistrationForm()
     sys.stderr.write('\nviews.py,SIGNUP,email:'+form.email.data+'\n')
@@ -160,7 +195,8 @@ def signup():
         db.session.commit()
         token = user.generate_confirmation_token()
         send_email(user.email, 'Confirm Your Account',
-                   'auth/email/confirm', user=user, token=token)
+                   'reactapi/email/confirm', user=user, token=token)
+        # Huom. ilmoitus sähköpostivahvistuksesta tarvitaan käyttöliittymään
         # flash('A confirmation email has been sent to you by email.')
         return "OK"
     else:
@@ -169,6 +205,56 @@ def signup():
         response = jsonify(form.errors)
         response.status_code = 200
         return response
+
+
+@reactapi.route('/unconfirmed')
+def unconfirmed():
+    app = current_app._get_current_object()
+    app.logger.debug('reactapi.unconfirmed,endnode: %s',request.endpoint)
+    if current_user.is_anonymous or current_user.confirmed:
+        app.logger.debug('reactapi.unconfirmed,redirect: %s',current_user.is_anonymous)
+        return redirect(app.config['REACT_ORIGIN'])
+    return redirect(app.config['REACT_UNCONFIRMED'])
+
+
+@reactapi.route('/confirm/<token>')
+# Määritetään CORS-alustuksessa
+# @cross_origin(supports_credentials=True)
+@login_required
+# Huom. login_required vie login-sivulle, ja kirjautuminen takaisin tänne
+def confirm(token):
+    app = current_app._get_current_object()
+    app.logger.debug('/confirm,confirmed: %s',current_user.confirmed)
+    if current_user.confirmed:
+        # Huom. Tähän vain sähköpostilinkistä kirjautuneena.
+        # Siirtyminen uuteen ikkunaan ei-kirjautuneena
+        return redirect(app.config['REACT_CONFIRMED'])
+        # message = "Sähköpostiosoite on jo vahvistettu."
+        # return jsonify({'ok':"Virhe",'message':message})
+    if current_user.confirm(token):
+        app.logger.debug('/confirm,confirmed here')
+        db.session.commit()
+        message = "Sähköpostiosoite on vahvistettu."
+        # redirect_url = f"{app.config['REACT_ORIGIN']}?message={message}"
+        # return redirect(redirect_url)
+        return jsonify({'ok':"OK",'message':message})
+    else:
+        message = 'Vahvistuslinkki on virheellinen tai se ei ole enää voimassa.'
+        # redirect_url = f"{app.config['REACT_UNCONFIRMED']}?message={message}"
+        # return redirect(redirect_url)
+        # return jsonify({'ok':"Virhe",'message':message})
+        return redirect(app.config['REACT_UNCONFIRMED'])
+    # return redirect(app.config['REACT_ORIGIN'])
+
+
+@reactapi.route('/confirm')
+@login_required
+def resend_confirmation():
+    token = current_user.generate_confirmation_token()
+    send_email(current_user.email, 'Confirm Your Account',
+               'auth/email/confirm', user=current_user, token=token)
+    flash('A new confirmation email has been sent to you by email.')
+    return redirect(url_for('main.index'))
 
 
 @reactapi.route('/haeProfiili', methods=['GET', 'POST'])

@@ -52,8 +52,18 @@ def create_app(config_name):
     # Set the Flask app logger to use the created logger
     # app.logger.handlers = logger.handlers
     # app.logger.addHandler(logging.StreamHandler()) 
-     # reactia varten
-    CORS(app,expose_headers=["Content-Type","X-CSRFToken"])
+    '''
+    CORS mm. Reactia varten, koko sovellukseen ml. Blueprintit
+    Lisää headerit:
+    1   Access-Control-Allow-Origin: Specifies the allowed origins that are allowed to access the resource. It can be set to "*" to allow all origins or specific origins.
+    2   Access-Control-Allow-Methods: Specifies the allowed HTTP methods for the resource.
+    3   Access-Control-Allow-Headers: Specifies the allowed headers in the actual request.
+        Sisältää Content-Type
+    4   Access-Control-Expose-Headers: Specifies the headers that can be exposed to the client.
+        Access-Control-Allow-Credentials: Specifies whether the response can be exposed when the request's credentials mode is included.
+        Ei sisälly automaattisesti
+    '''
+    CORS(app,supports_credentials=True,expose_headers=["Content-Type","X-CSRFToken"])
     app.config.from_object(config[config_name])
     config[config_name].init_app(app)
     # print(config[config_name].SQLALCHEMY_DATABASE_URI)
