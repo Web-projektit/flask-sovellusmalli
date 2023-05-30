@@ -233,11 +233,17 @@ def confirm(token):
         # return jsonify({'ok':"Virhe",'message':message})
     if current_user.confirm(token):
         app.logger.debug('/confirm,confirmed here')
+        app.logger.debug('/confirm,headers:' + str(request.headers))
         db.session.commit()
         message = "Sähköpostiosoite on vahvistettu."
         # redirect_url = f"{app.config['REACT_ORIGIN']}?message={message}"
         # return redirect(redirect_url)
-        return jsonify({'ok':"OK",'message':message})
+        if request.headers['Referer']:
+            # Kirjautumisen kautta
+            return jsonify({'ok':"OK",'message':message})
+        else:
+            # Sähköpostilinkin kautta suoraan
+            return redirect(app.config['REACT_CONFIRMED'])
     else:
         message = 'Vahvistuslinkki on virheellinen tai se ei ole enää voimassa.'
         # redirect_url = f"{app.config['REACT_UNCONFIRMED']}?message={message}"
@@ -251,10 +257,12 @@ def confirm(token):
 @login_required
 def resend_confirmation():
     token = current_user.generate_confirmation_token()
+    app = current_app._get_current_object()
+    app.logger.debug('/confirm: %s',current_user.email)
     send_email(current_user.email, 'Confirm Your Account',
-               'auth/email/confirm', user=current_user, token=token)
-    flash('A new confirmation email has been sent to you by email.')
-    return redirect(url_for('main.index'))
+               'reactapi/email/confirm', user=current_user, token=token)
+    message = 'A new confirmation email has been sent to you by email.'
+    return jsonify({'ok':"OK",'message':message})
 
 
 @reactapi.route('/haeProfiili', methods=['GET', 'POST'])

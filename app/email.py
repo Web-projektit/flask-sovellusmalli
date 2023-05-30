@@ -12,7 +12,7 @@ def send_async_email(app, msg):
         except Exception as ex:
             ex_name = ex.__class__.__name__
             sys.stderr.write('Sahkopostilahetysvirhe: ' + ex_name + '\n')
-            sys.stderr.write(ex + '\n')
+            sys.stderr.write(str(ex) + '\n')
 
 def send_email(to, subject, template, **kwargs):
     app = current_app._get_current_object()
