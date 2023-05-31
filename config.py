@@ -40,7 +40,8 @@ class LocalConfig(Config):
     WTF_CSRF_ENABLED = True
     KUVAPALVELU = 'local'
     KUVAPOLKU = 'app/profiilikuvat/'
-    REACT_ORIGIN = 'http://localhost:3000/react-sovellusmalli/'
+    # REACT_ORIGIN = 'http://localhost:3000/react-sovellusmalli/'
+    REACT_ORIGIN = '/react-sovellusmalli/'
     REACT_LOGIN = REACT_ORIGIN + 'login'
     REACT_UNCONFIRMED = REACT_ORIGIN + 'unconfirmed'
     REACT_CONFIRMED = REACT_ORIGIN + 'confirmed'
@@ -48,6 +49,12 @@ class LocalConfig(Config):
 class DevelopmentConfig(LocalConfig):
     KUVAPALVELU = 'S3'
     KUVAPOLKU = os.environ.get('S3_DOMAIN')
+
+class XamppConfig(LocalConfig):
+    REACT_ORIGIN = 'http://localhost/react-sovellusmalli/'
+    REACT_LOGIN = REACT_ORIGIN + 'login'
+    REACT_UNCONFIRMED = REACT_ORIGIN + 'unconfirmed'
+    REACT_CONFIRMED = REACT_ORIGIN + 'confirmed'
     
 class HerokuConfig(Config):
     SQLALCHEMY_DATABASE_URI = os.environ.get('CLEARDB_DATABASE_URL')
@@ -86,11 +93,16 @@ class AzureConfig(Config):
     # print("SQLALCHEMY_DATABASE_URI Azure-palvelimelle " + DB_SERVER)
     # SQLALCHEMY_ECHO = True
     SQLALCHEMY_ECHO = "debug"
+    # Huom. kuvien oletussijainti on AWS S3
     WTF_CSRF_ENABLED = True
     # WTF_CSRF_HEADERS= ['X-Csrftoken']
     # WTF_CSRF_SSL_STRICT = True
     # WTF_CSRF_TIME_LIMIT = None
-
+    # REACT_ORIGIN = '/react-sovellusmalli/'
+    REACT_ORIGIN = os.environ.get('REACT_ORIGIN') or '/react-sovellusmalli/'
+    REACT_LOGIN = REACT_ORIGIN + 'login'
+    REACT_UNCONFIRMED = REACT_ORIGIN + 'unconfirmed'
+    REACT_CONFIRMED = REACT_ORIGIN + 'confirmed'
     # Näiden tarpeellisuus tulisi testata
     CSRF_TRUSTED_ORIGINS = ['https://' + os.environ.get('WEBSITE_HOSTNAME')] 
     SESSION_COOKIE_SECURE = True
@@ -102,6 +114,7 @@ config = {
     'testing': TestingConfig,
     'production': ProductionConfig,
     'local': LocalConfig,
+    'xampp': XamppConfig,
     'heroku': HerokuConfig,
     'azure': AzureConfig,
     'default': DevelopmentConfig

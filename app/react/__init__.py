@@ -40,5 +40,11 @@ def serve(path):
         print(f'serve:polku {path} löytyi')
         return send_from_directory(react.static_folder, path)
     else:
+        # Huom. Tämä reitittää kaikki react-sovelluksen reitit  
+        # index.html-sivulle, joka tulkitsee osoiterivin url-osoitteen 
+        # react-router-domin avulla. Tämä reititys index.html-sivun kautta
+        # ei toimi itsestään itsenäisessä React-sovelluksessa,
+        # vaan siinä kohteeseen navigoidaan index.html-sivun
+        # tuotetun käyttöliittymän kautta.
         print('serve:index.html')
         return send_from_directory(react.static_folder, 'index.html')

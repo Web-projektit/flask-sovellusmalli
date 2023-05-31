@@ -26,6 +26,7 @@ def before_app_request():
             and request.endpoint \
             and request.endpoint != 'static' \
             and request.blueprint != 'auth' \
+            and request.blueprint != 'react' \
             and request.blueprint != 'reactapi':
             # and not request.path.startswith('/static/'):
             # Huom. is_authenticated: kirjautunut

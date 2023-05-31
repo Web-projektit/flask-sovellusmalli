@@ -228,7 +228,9 @@ def confirm(token):
     if current_user.confirmed:
         # Huom. Tähän vain sähköpostilinkistä kirjautuneena.
         # Siirtyminen uuteen ikkunaan ei-kirjautuneena
-        return redirect(app.config['REACT_CONFIRMED'])
+        # Huom. Nyt sama ilmoitus kuin ensi kertaa vahvistuksessa.
+        app.logger.debug('/confirm,REACT_CONFIRMED:' + app.config['REACT_CONFIRMED'])
+        return redirect(app.config['REACT_CONFIRMED'] + '?jo=jo')
         # message = "Sähköpostiosoite on jo vahvistettu."
         # return jsonify({'ok':"Virhe",'message':message})
     if current_user.confirm(token):
@@ -238,11 +240,12 @@ def confirm(token):
         message = "Sähköpostiosoite on vahvistettu."
         # redirect_url = f"{app.config['REACT_ORIGIN']}?message={message}"
         # return redirect(redirect_url)
-        if request.headers['Referer']:
+        if request.headers.get('Referer'):
             # Kirjautumisen kautta
             return jsonify({'ok':"OK",'message':message})
         else:
             # Sähköpostilinkin kautta suoraan
+            app.logger.debug('\n/confirm,REACT_CONFIRMED:' + app.config['REACT_CONFIRMED']+'\n')
             return redirect(app.config['REACT_CONFIRMED'])
     else:
         message = 'Vahvistuslinkki on virheellinen tai se ei ole enää voimassa.'

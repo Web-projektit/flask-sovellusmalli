@@ -53,3 +53,4 @@ migrations_*
 commitit*
 app/profiilikuvat/*
 react/react-sovellusmalli_old
+flasksovellus.py
