@@ -165,7 +165,7 @@ def signin():
             #    next = url_for('main.index')
             sys.stderr.write(f"\nviews.py,SIGNIN, request.args:{request.args}\n")
             next = request.args.get('next')
-            sys.stderr.write(f"\nviews.py,SIGNIN:OK, next:{next}\n")
+            sys.stderr.write(f"\nviews.py,SIGNIN:OK, next:{next}, confirmed:{user.confirmed}\n")
             if next is None or not next.startswith('/'):
                 # next = url_for('main.index')
                 if user.confirmed:

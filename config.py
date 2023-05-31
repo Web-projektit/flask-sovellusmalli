@@ -40,8 +40,8 @@ class LocalConfig(Config):
     WTF_CSRF_ENABLED = True
     KUVAPALVELU = 'local'
     KUVAPOLKU = 'app/profiilikuvat/'
-    # REACT_ORIGIN = 'http://localhost:3000/react-sovellusmalli/'
-    REACT_ORIGIN = '/react-sovellusmalli/'
+    REACT_ORIGIN = 'http://localhost:3000/react-sovellusmalli/'
+    # REACT_ORIGIN = '/react-sovellusmalli/'
     REACT_LOGIN = REACT_ORIGIN + 'login'
     REACT_UNCONFIRMED = REACT_ORIGIN + 'unconfirmed'
     REACT_CONFIRMED = REACT_ORIGIN + 'confirmed'
