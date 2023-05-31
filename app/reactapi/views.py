@@ -168,7 +168,10 @@ def signin():
             sys.stderr.write(f"\nviews.py,SIGNIN:OK, next:{next}\n")
             if next is None or not next.startswith('/'):
                 # next = url_for('main.index')
-                return jsonify({'ok':'OK'})
+                if user.confirmed:
+                    return jsonify({'ok':'OK','confirmed':'1'})
+                else:
+                    return jsonify({'ok':'OK'})
             return redirect(next)
         else:
             response = jsonify({'virhe':'Väärät tunnukset'})
