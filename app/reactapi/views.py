@@ -255,6 +255,9 @@ def confirm(token):
         # redirect_url = f"{app.config['REACT_UNCONFIRMED']}?message={message}"
         # return redirect(redirect_url)
         # return jsonify({'ok':"Virhe",'message':message})
+        if request.headers.get('Referer'):
+            # Kirjautumisen kautta
+            return jsonify({'ok':"Virhe",'message':message})
         return redirect(app.config['REACT_UNCONFIRMED'])
     # return redirect(app.config['REACT_ORIGIN'])
 

@@ -108,6 +108,11 @@ class AzureConfig(Config):
     SESSION_COOKIE_SECURE = True
     SESSION_COOKIE_SAMESITE = 'None'
     
+class AzureStaticConfig(AzureConfig):
+    REACT_ORIGIN = os.environ.get('REACT_ORIGIN_STATIC') or '/react-sovellusmalli/'
+    REACT_LOGIN = REACT_ORIGIN + 'login'
+    REACT_UNCONFIRMED = REACT_ORIGIN + 'unconfirmed'
+    REACT_CONFIRMED = REACT_ORIGIN + 'confirmed'
 
 config = {
     'development': DevelopmentConfig,
@@ -117,5 +122,6 @@ config = {
     'xampp': XamppConfig,
     'heroku': HerokuConfig,
     'azure': AzureConfig,
+    'azurestatic': AzureStaticConfig,
     'default': DevelopmentConfig
 }
