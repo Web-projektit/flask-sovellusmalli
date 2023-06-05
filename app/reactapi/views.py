@@ -12,6 +12,7 @@ from ..auth.forms import LoginForm, RegistrationForm, ProfileForm
 from flask_cors import cross_origin
 from flask_wtf.csrf import generate_csrf,CSRFError
 import sys
+from urllib.parse import urlencode
 
 # By redirecting sys.stderr to sys.stdout, both error messages and print statements 
 # will be sent to the standard output stream and captured in the log stream in Azure.
@@ -228,6 +229,7 @@ def unconfirmed():
 def confirm(token):
     app = current_app._get_current_object()
     app.logger.debug('/confirm,confirmed: %s',current_user.confirmed)
+    app.logger.debug('/confirm,headers:' + str(request.headers))
     if current_user.confirmed:
         # Huom. Tähän vain sähköpostilinkistä kirjautuneena.
         # Siirtyminen uuteen ikkunaan ei-kirjautuneena
@@ -238,7 +240,6 @@ def confirm(token):
         # return jsonify({'ok':"Virhe",'message':message})
     if current_user.confirm(token):
         app.logger.debug('/confirm,confirmed here')
-        app.logger.debug('/confirm,headers:' + str(request.headers))
         db.session.commit()
         message = "Sähköpostiosoite on vahvistettu."
         # redirect_url = f"{app.config['REACT_ORIGIN']}?message={message}"
@@ -251,14 +252,18 @@ def confirm(token):
             app.logger.debug('\n/confirm,REACT_CONFIRMED:' + app.config['REACT_CONFIRMED']+'\n')
             return redirect(app.config['REACT_CONFIRMED'])
     else:
+        # Huom. Kun on jo kirjauduttu toisella välilehdellä, Referer-headeriä ei ole.
+        # Suojattu reitti /unfirmed Reactissa johtaa sinne kirjautumisen kautta. 
         message = 'Vahvistuslinkki on virheellinen tai se ei ole enää voimassa.'
         # redirect_url = f"{app.config['REACT_UNCONFIRMED']}?message={message}"
         # return redirect(redirect_url)
         # return jsonify({'ok':"Virhe",'message':message})
+        query_params = { 'message':message }
+        encoded_params = urlencode(query_params)
         if request.headers.get('Referer'):
             # Kirjautumisen kautta
             return jsonify({'ok':"Virhe",'message':message})
-        return redirect(app.config['REACT_UNCONFIRMED'])
+        return redirect(app.config['REACT_UNCONFIRMED'] + "?" + encoded_params) 
     # return redirect(app.config['REACT_ORIGIN'])
 
 

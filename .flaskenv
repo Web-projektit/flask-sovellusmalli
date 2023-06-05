@@ -1,3 +1,3 @@
 FLASK_APP="flask-sovellus"
 FLASK_DEBUG=1
-FLASK_CONFIG="xampp"
+FLASK_CONFIG="local"

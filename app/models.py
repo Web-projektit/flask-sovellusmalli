@@ -110,9 +110,11 @@ class User(UserMixin, db.Model):
         s = Serializer(current_app.config['SECRET_KEY'])
         try:
             data = s.loads(token.encode('utf-8'))
-        except:
+        except Exception as e:
+            print ("SELF,confirm Exception: "+getattr(e, 'message', repr(e)))
             return False
         if data.get('confirm') != self.id:
+            print("SELF,confirm,data['confirm']:"+data.get('confirm'))
             return False
         self.confirmed = True
         db.session.add(self)
