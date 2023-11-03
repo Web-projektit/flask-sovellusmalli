@@ -6,7 +6,8 @@ from .. import db
 from ..models import User
 from ..email import send_email
 from .forms import LoginForm, RegistrationForm, ChangePasswordForm,\
-    PasswordResetRequestForm, PasswordResetForm, ChangeEmailForm
+    PasswordResetRequestForm, PasswordResetForm, ChangeEmailForm,\
+    patterns
 
 
 # Huom. Tässä myöskin reactapi-kutsut on otettu huomioon
@@ -75,6 +76,7 @@ def logout():
 
 @auth.route('/register', methods=['GET', 'POST'])
 def register():
+    print("pattern:",patterns)
     form = RegistrationForm()
     if form.validate_on_submit():
         user = User(email=form.email.data.lower(),
@@ -87,7 +89,7 @@ def register():
                    'auth/email/confirm', user=user, token=token)
         flash('A confirmation email has been sent to you by email.')
         return redirect(url_for('auth.login'))
-    return render_template('auth/register.html', form=form)
+    return render_template('auth/register.html', form=form, patterns=patterns)
 
 
 @auth.route('/confirm/<token>')

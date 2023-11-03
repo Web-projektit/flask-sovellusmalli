@@ -22,7 +22,7 @@ const remove_has_danger = event => {
   
 (() => {
     'use strict'
-    /* Quick_formin lisää palvelimen validointivirheestä has-danger-classin ja invalid-feedback-elementin, 
+    /* Quick_form lisää palvelimen validointivirheestä has-danger-classin ja invalid-feedback-elementin, 
         joka näkyy, jos form-control-classiin lisätään is-invalid ja häipyy, kun is-invalid poistetaan. */
     document.querySelectorAll(".has-danger .form-control").forEach(
         element => {

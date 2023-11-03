@@ -28,7 +28,6 @@ class Config:
     def init_app(app):
         pass
 
-
 class LocalConfig(Config):
     DEBUG = True
     DB_USERNAME = os.environ.get('LOCAL_DB_USERNAME') or 'root'

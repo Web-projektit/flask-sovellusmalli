@@ -5,6 +5,9 @@ from wtforms.validators import DataRequired, Length, Email, Regexp, EqualTo
 from wtforms import ValidationError
 from ..models import User
 
+pattern_username = r'^[A-Za-z][A-Za-z0-9 _.]*$'
+patterns = {'username':{"pattern": pattern_username}}
+
 class LoginForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Length(1, 64),
                                              Email()])
@@ -18,7 +21,7 @@ class RegistrationForm(FlaskForm):
                                              Email()])
     username = StringField('Username', validators=[
         DataRequired(), Length(1, 64),
-        Regexp('^[A-Za-z][A-Za-z0-9 _.]*$', 0,
+        Regexp(pattern_username, 0,
                'Käyttäjätunnuksessa saa olla vain kirjaimia, numeroita, piste, '
                'alaviiva tai välilyönti')])
     password = PasswordField('Password', validators=[
