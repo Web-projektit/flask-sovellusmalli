@@ -12,9 +12,9 @@ class Config:
         ['true', 'on', '1']
     MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
-    FLASKY_MAIL_SUBJECT_PREFIX = '[Flaskprojekti]'
+    FLASK_SOVELLUSMALLI_MAIL_SUBJECT_PREFIX = '[Flaskprojekti]'
     SP_MAIL_SENDER = 'Flaskprojekti Admin <flaskprojekti@example.com>'
-    FLASKY_ADMIN = os.environ.get('SP_ADMIN')
+    FLASK_SOVELLUSMALLI_ADMIN = os.environ.get('SP_ADMIN')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     @staticmethod
