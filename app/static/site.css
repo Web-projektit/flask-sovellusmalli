@@ -6,9 +6,12 @@
 .td-keskitetty {text-align: center;}
 .invalid-feedback,.help-block{
     color:red;
-    display:inline-block;
     font-size:1rem;
-}
+    }
+.form-group {
+    margin:0;
+    padding:0;
+    }
 .btn-close {float:right;}
 .btn-default {border:1px solid grey;}
 .btn {margin-top:10px;}

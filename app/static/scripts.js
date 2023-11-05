@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {});
             }
           )*/
 
-    document.querySelectorAll(".is-invalid").forEach(
+    document.querySelectorAll(".is-invalid,:invalid").forEach(
       element => element.addEventListener("input", poista_is_invalid)
       )
     
@@ -49,11 +49,11 @@ document.addEventListener('DOMContentLoaded', () => {});
           document.querySelectorAll("input:invalid")
           .forEach(element => {
             console.log(element.name+':'+element.validationMessage)
-            if (!element.nextElementSibling){
+            /*if (!element.nextElementSibling){
                 let feedback = document.createElement('div')
                 feedback.classList.add('invalid-feedback')
                 element.parentElement.appendChild(feedback)
-                }
+                }*/
             element.nextElementSibling.innerHTML = element.validationMessage
             element.addEventListener('blur', () => 
               element.nextElementSibling.innerHTML = element.validationMessage)
