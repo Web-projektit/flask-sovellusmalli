@@ -6,30 +6,25 @@ const poista_is_invalid = event => {
       }
     }  
   
-const remove_has_danger = event => {
-    let input = event.target;
-    let element = input.parentElement;
-    element.classList.remove("has-danger");
-    /*element.querySelectorAll(".invalid-feedback").forEach(
-        e => e.style.display = "none"
-        )*/
-    input.removeEventListener("input", remove_has_danger);
-    }
-  
-//document.addEventListener('DOMContentLoaded', () => {
-    
-//  });
+/* 
+document.addEventListener('DOMContentLoaded', () => {});
+*/  
   
 (() => {
     'use strict'
     /* Quick_form lisää palvelimen validointivirheestä has-danger-classin ja invalid-feedback-elementin, 
         joka näkyy, jos form-control-classiin lisätään is-invalid ja häipyy, kun is-invalid poistetaan. */
-    document.querySelectorAll(".has-danger .form-control").forEach(
+    /*document.querySelectorAll(".has-danger .form-control").forEach(
         element => {
             element.classList.add('is-invalid');
             element.addEventListener("input", poista_is_invalid)
             }
-          )
+          )*/
+
+    document.querySelectorAll(".is-invalid").forEach(
+      element => element.addEventListener("input", poista_is_invalid)
+      )
+    
 
     const forms = document.querySelectorAll('.needs-validation')
     // Loop over them and prevent submission

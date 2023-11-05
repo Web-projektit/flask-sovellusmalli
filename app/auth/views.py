@@ -76,6 +76,12 @@ def logout():
 
 @auth.route('/register', methods=['GET', 'POST'])
 def register():
+    '''
+    Huom. Tässä on välitetty patterns-muuttuja, joka on määritelty forms.py:ssä.
+    Tätä ei kuitenkaan tarvittaisi, vaan lomakekentän Regexp-validaattorin regex-ominaisuus
+    saadaan jinja2-muuttujaan kentän validators[i].regex.pattern-ominaisuudesta 
+    validators[i] ollessa Regexp, ks. oma wtf.html-tiedosto. 
+    '''
     print("pattern:",patterns)
     form = RegistrationForm()
     if form.validate_on_submit():
