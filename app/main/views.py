@@ -10,7 +10,7 @@ from botocore.client import Config
 from werkzeug.utils import secure_filename
 from werkzeug.exceptions import RequestEntityTooLarge
 
-ALLOWED_EXTENSIONS = { 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
+ALLOWED_EXTENSIONS = { 'pdf', 'png', 'jpg', 'jpeg', 'gif' }
 
 def allowed_file(filename):
     return '.' in filename and \

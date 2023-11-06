@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {});
                 element.parentElement.appendChild(feedback)
                 }*/
             element.nextElementSibling.innerHTML = element.validationMessage
-            element.addEventListener('blur', () => 
+            element.addEventListener('input', () => 
               element.nextElementSibling.innerHTML = element.validationMessage)
             })    
           }
