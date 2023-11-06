@@ -25,13 +25,14 @@ def index():
 def img(filename = None):
     # Profiilikuvat Flask-sovelluskansiossa profiilikuvat,
     # paitsi oletusprofiilikuva static-kansiossa.
+    print("IMG:"+str(filename))
     app = current_app._get_current_object()
     if filename is None:
         return send_from_directory('static','default_profile.png')
     elif app.config['KUVAPALVELU'] == 'local':
         basedir = os.path.abspath('.')
         kuvapolku = os.path.join(basedir, app.config['KUVAPOLKU'])
-        # print("ABSOLUUTTINEN KUVAPOLKU:"+kuvapolku)
+        print("ABSOLUUTTINEN KUVAPOLKU:"+kuvapolku)
         # return send_from_directory('c://projektit/flask-sovellusmalli/app/profiilikuvat/', filename)
         return send_from_directory(kuvapolku, filename)
     
@@ -90,8 +91,8 @@ def edit_profile_all():
     form.img.data = current_user.img
     if current_user.img:
         kuva = str(current_user.id) + '_' + current_user.img 
-        if kuvapalvelu != 'local':
-            kuva = os.path.join(KUVAPOLKU, kuva)
+        # if kuvapalvelu != 'local':
+        # kuva = os.path.join(KUVAPOLKU, kuva)
     else:
         kuva = ''    
     # return redirect(url_for('profile'))
@@ -240,6 +241,7 @@ def save_local():
         koko = round(app.config['MAX_CONTENT_LENGTH'] / (1000 * 1000))
         msg = f"Kuvaa ei tallennettu, sen koko saa olla maks. {koko} MB."
         return json.dumps({'virhe':msg})
+    
     if file and file.filename != '' and allowed_file(file.filename):
         kuvanimi = secure_filename(file.filename)
         filename = str(current_user.id) + '_' + kuvanimi
@@ -248,8 +250,8 @@ def save_local():
     else:
         virhe = "Tiedostoa ei annettu."
     dump = json.dumps({
-        'img':kuvanimi,
-        'kuva':filename,
+        'img': kuvanimi,
+        'kuva': filename,
         'msg': msg,
         'virhe': virhe
         })

@@ -5,15 +5,26 @@ const uploadFile = file => {
 console.log('uploadFile:',file.name)    
 document.querySelector('#preview').src = URL.createObjectURL(file);
 const postData = new FormData();
+const csrfToken = document.querySelector('#csrf_token').value;
 postData.append('file', file);
+//postData.append('csrf-token', csrfToken);
 fetch(url,{
     method:'POST',
+    headers: { 'X-CSRF-TOKEN': csrfToken },
     body:postData})
 .then(response => response.json())
 .then(success => {
     console.log(success)  
     if (success.msg){
-        document.querySelector('#img').value = file.name;
+        // document.querySelector('#img').value = file.name;
+        /* Huom. file.name saattaa sisältää merkkejä, jotka secure_filename
+           suodattaa pois tiedoston nimestä tiedostoa tallennettaessa. 
+           Lomakekenttään img on tietokantaan tallennusta varten sijoitettava 
+           tämä suodatettu tiedostonimi. Esim. "DALL·E 2023-10-23 17.04.48 - 
+           Large minimalistic fivecon logo in warm tones representing a 
+           teacher with a whiteboard, where the board displays a prominent 
+           web page layout icon in c.png". */
+        document.querySelector('#img').value = success.img;
         alert(success.msg)
     }
     else if (virhe) {

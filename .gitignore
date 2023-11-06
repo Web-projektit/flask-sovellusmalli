@@ -52,5 +52,6 @@ gitlog.txt
 migrations_*
 commitit*
 app/profiilikuvat/*
+!app/profiilikuvat/
 react/react-sovellusmalli_old
 flasksovellus.py
