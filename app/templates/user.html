@@ -5,6 +5,11 @@
 {% block page_content %}
 <div class="page-header">
     <h1>{{ user.username }}</h1>
+
+    {% if kuva and config['KUVAPALVELU'] == 'local' %}
+    <img src="{{ url_for('main.img',filename=kuva) }}" class="profiilikuva">    
+    {% endif %}
+
     {% if user.name or user.location %}
     <p>
         {% if user.name %}{{ user.name }}{% endif %}

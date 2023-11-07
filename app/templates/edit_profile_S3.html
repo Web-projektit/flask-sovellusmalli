@@ -12,15 +12,16 @@
 <label for="file-input" class="label-button">Valitse profiilikuva</label>
 <button data-toggle="button" type="button" id="file-clear">Poista</button>
 <button data-toggle="button" type="button" id="file-reload" disabled>Palauta</button><br>
-<input accept="image/*" type="file" id="file-input" style="display:none;">
+<input accept="image/*" type="file" id="file-input" name="file" style="display:none;">
 </form>
 {% if not kuva %}
-<img style="margin:4px 0;border:1px solid gray;width:300px;" onclick="alert(this.src)" id="preview" src="{{ url_for('static',filename='default_profile.png') }}">
+<img class="profiilikuva" onclick="alert(this.src)" id="preview" src="{{ url_for('static',filename='default_profile.png') }}">
 {% elif config['KUVAPALVELU'] == 'S3' %}
-<img style="margin:4px 0;border:1px solid gray;width:300px;" onclick="alert(this.src)" id="preview" src="{{ kuva }}">
+<img class="profiilikuva" onclick="alert(this.src)" id="preview" src="{{ kuva }}">
 {% else %}
-<img style="margin:4px 0;border:1px solid gray;width:300px;" onclick="alert(this.src)" id="preview" src="{{ url_for('main.img',filename=kuva) }}">
+<img class="profiilikuva" onclick="alert(this.src)" id="preview" src="{{ url_for('main.img',filename=kuva) }}">
 {% endif %}
+<div id="invalid-image" class="text-danger"></div>
 
 <div class="col-md-4">
 {{ wtf.quick_form(form,novalidate=True,extra_classes='needs-validation') }}

@@ -4,17 +4,16 @@
     padding:1px 5px;
     } 
 .td-keskitetty {text-align: center;}
+
 .invalid-feedback,.help-block{
     color:red;
     font-size:1rem;
     }
-.form-group {
-    margin:0;
-    padding:0;
-    }
+
 .btn-close {float:right;}
 .btn-default {border:1px solid grey;}
 .btn {margin-top:10px;}
+
 body {
     display: flex;
     flex-direction: column;
@@ -27,4 +26,11 @@ footer {
     margin:0 auto;
     padding:10px;
   }
+
+.profiilikuva {
+    margin:4px 0;
+    border:1px solid gray;
+    width:300px;
+    }
+
 

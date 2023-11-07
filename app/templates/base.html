@@ -26,6 +26,7 @@
           <a class="nav-link{{ ' active' if request.endpoint == 'main.users' }}" href="{{ url_for('main.users') }}">Users</a>
           {% endif %}
         </div>
+        {# ms-auto jälkeen oikeaan reunaan #}
         <div class="navbar-nav ms-auto">
           {% if current_user.is_authenticated %}
           <a class="nav-link{{ ' active' if request.endpoint == 'auth.change_password' }}" href="{{ url_for('auth.change_password') }}">Change Password</a>

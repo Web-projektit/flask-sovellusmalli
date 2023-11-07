@@ -12,7 +12,12 @@ fetch(url,{
     method:'POST',
     headers: { 'X-CSRF-TOKEN': csrfToken },
     body:postData})
-.then(response => response.json())
+.then(response => {
+    if (!response.ok) {
+        throw new Error(`HTTP-virhe, status: ${response.status}`)
+        }
+    return response.json(); // Continue with processing the response if it's OK
+    })
 .then(success => {
     console.log(success)  
     if (success.msg){
@@ -24,16 +29,19 @@ fetch(url,{
            Large minimalistic fivecon logo in warm tones representing a 
            teacher with a whiteboard, where the board displays a prominent 
            web page layout icon in c.png". */
-        document.querySelector('#img').value = success.img;
+        document.querySelector('#img').value = success.img
+        document.querySelector('#invalid-image').innerHTML = ''
         alert(success.msg)
     }
-    else if (virhe) {
-        alert(success.virhe)
+    else if (success.virhe) {
+        // alert(success.virhe)
+        document.querySelector('#invalid-image').innerHTML = success.virhe
     }    
     })
 .catch(error => {
-    console.log(error)
-    alert('Tiedostoa ei tallennettu.')
+    console.log(error.message)
+    // alert('Tiedostoa ei tallennettu.')
+    document.querySelector('#invalid-image').innerHTML = error.message
     })
 }
 
@@ -76,14 +84,16 @@ document.querySelector('#img').value = "";
 document.querySelector('#file-clear').disabled = true
 document.querySelector('#file-reload').disabled = false
 document.querySelector('#apulomake').reset()
+document.querySelector('#invalid-image').innerHTML = ''
 }
 
 const reloadFile = () => {
-    document.querySelector('#preview').src = preview_org;
-    document.querySelector('#img').value = img_org;
-    document.querySelector('#file-reload').disabled = true
-    document.querySelector('#apulomake').reset()
-    }
+document.querySelector('#preview').src = preview_org;
+document.querySelector('#img').value = img_org;
+document.querySelector('#file-reload').disabled = true
+document.querySelector('#apulomake').reset()
+document.querySelector('#invalid-image').innerHTML = ''
+}
     
 /* Bind listeners when the page loads.*/
 (() => {

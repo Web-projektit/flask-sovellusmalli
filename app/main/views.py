@@ -30,6 +30,7 @@ def img(filename = None):
     if filename is None:
         return send_from_directory('static','default_profile.png')
     elif app.config['KUVAPALVELU'] == 'local':
+        # Huom. S3-kuvapalvelun toteutus on kesken
         basedir = os.path.abspath('.')
         kuvapolku = os.path.join(basedir, app.config['KUVAPOLKU'])
         print("ABSOLUUTTINEN KUVAPOLKU:"+kuvapolku)
@@ -39,7 +40,12 @@ def img(filename = None):
 @main.route('/user/<username>')
 def user(username):
     user = User.query.filter_by(username=username).first_or_404()
-    return render_template('user.html', user=user)
+    if user.img:
+        kuva = str(current_user.id) + '_' + current_user.img 
+    else:
+        kuva = '' 
+    print("KUVA:"+kuva)
+    return render_template('user.html', user=user, kuva=kuva)
 
 @main.route('/edit-profile', methods=['GET', 'POST'])
 @login_required
@@ -233,26 +239,25 @@ def save_local():
     KUVAPOLKU = app.config['KUVAPOLKU']
     virhe = ''
     msg = ''
+    errmsg = ''
     try:
         if 'file' in request.files:
             file = request.files['file']
-    except RequestEntityTooLarge as e:
+    except Exception as e:
         app.logger.info(e)
-        koko = round(app.config['MAX_CONTENT_LENGTH'] / (1000 * 1000))
-        msg = f"Kuvaa ei tallennettu, sen koko saa olla maks. {koko} MB."
-        return json.dumps({'virhe':msg})
+        errmsg = "Virhe tiedoston vastaanotossa."
+        return json.dumps({'virhe':errmsg})
     
     if file and file.filename != '' and allowed_file(file.filename):
-        kuvanimi = secure_filename(file.filename)
+        kuvanimi = secure_filename(file.filename)[:64]
         filename = str(current_user.id) + '_' + kuvanimi
         file.save(os.path.join(KUVAPOLKU, filename))
         msg = f"Tiedosto tallennettiin nimellä {filename}."
     else:
         virhe = "Tiedostoa ei annettu."
-    dump = json.dumps({
+    return jsonify({
         'img': kuvanimi,
-        'kuva': filename,
         'msg': msg,
         'virhe': virhe
         })
-    return dump
+
