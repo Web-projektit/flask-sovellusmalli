@@ -196,9 +196,9 @@ def poista():
         db.session.delete(user)
         db.session.commit()
         flash(f"Käyttäjä {user.name} on poistettu")
-        return jsonify("OK, käyttäjä on poistettu.")
+        return jsonify(OK="käyttäjä on poistettu.")
     else:
-        return jsonify("Virhe: käyttäjää ei löydy.")
+        return jsonify(virhe="käyttäjää ei löydy.")
 
 @main.route('/sign-s3/')
 @login_required

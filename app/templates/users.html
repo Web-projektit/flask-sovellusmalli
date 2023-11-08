@@ -34,18 +34,28 @@
 function poista(id,nimi){
 let url = "{{ url_for('main.poista') }}";
 if (confirm("Poistetaanko "+nimi+"?")){
+  console.log('poisto, lähetetään: ',id, " osoitteeseen: ",url)
+  const csrfToken = document.querySelector('#csrf_token').value;
   let formdata = new FormData();
   formdata.append('id', id);
   fetch(url, {
     method: 'POST',
+    headers: { 'X-CSRF-TOKEN': csrfToken },
     body: formdata
     })
-    .then(response => response.json())
-    .then(data => {
-      console.log('Vastaus:',JSON.stringify(data))
+  .then(response => {
+    if (!response.ok) {
+        throw new Error(`HTTP-virhe, status: ${response.status}`)
+        }
+    return response.json(); // Continue with processing the response if it's OK
+    })
+  .then(data => {
+      if (data.virhe) throw new Error(data.virhe)
+      else console.log(data.OK)
       location.reload()  
       })
-    .catch(error => console.log(error));
+  .catch(error => console.error(error.message));
+  // Huom. tässä ei tulosteta virhetilannetta käyttäjälle virhe-elementtiin.
   }
 return false;
 }     
@@ -55,7 +65,7 @@ return false;
     <h1>Users</h1>
     {% if current_user.is_administrator() %}
     <form id="lomake" method="POST">
-    <input type="hidden" value="{{ csrf_token() }}" name="csrf_token" />
+    <input type="hidden" value="{{ csrf_token() }}" name="csrf_token" id="csrf_token" />
     {# {{ form.hidden_tag() }} #} 
 
     <table class="table table-striped">

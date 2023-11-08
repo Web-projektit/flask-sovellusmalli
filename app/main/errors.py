@@ -1,6 +1,7 @@
 from flask import render_template,jsonify,current_app
 from werkzeug.exceptions import RequestEntityTooLarge
 from . import main
+import sys
 
 
 @main.app_errorhandler(403)
@@ -17,6 +18,12 @@ def page_not_found(e):
 def internal_server_error(e):
     return render_template('500.html'), 500
 
+@main.errorhandler(502)
+def internal_server_error(e):
+    # Tämä on varalla testaamatta
+    errmsg = f"Virhe:{e.description}."
+    sys.stderr.write(errmsg + '\n')
+    return jsonify(virhe=errmsg)
 
 @main.errorhandler(RequestEntityTooLarge)
 def handle_request_entity_too_large(e):
