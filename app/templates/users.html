@@ -12,7 +12,11 @@
 <td>{{ user.email }}</td>
 <td class="td-keskitetty">
 <input type="hidden" value="{{ user.id }}" name="users">
-<input type="checkbox" {{ 'checked' if user.active }} {{ 'disabled' if current_user.id == user.id }} value="{{ user.id }}" name="active">
+{% if current_user.id == user.id %}
+<input type="hidden" value="{{ user.id }}" name="active">
+{% else %}
+<input type="checkbox" {{ 'checked' if user.active }} value="{{ user.id }}" name="active">
+{% endif %}
 </td>
 <td class="td-keskitetty">
 {% if current_user.id != user.id %}    
