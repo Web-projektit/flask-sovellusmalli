@@ -1,4 +1,9 @@
 {% extends "base.html" %}
+{% block head %}
+{{ super() }} 
+<link href="{{ url_for('static', filename='users.css') }}" rel="stylesheet">
+{% endblock %}
+
 {% import "_macros.html" as macros %}
 
 {% macro render_user(user) %}
@@ -46,6 +51,9 @@ return false;
     <h1>Users</h1>
     {% if current_user.is_administrator() %}
     <form id="lomake" method="POST">
+    <input type="hidden" value="{{ csrf_token() }}" name="csrf_token" />
+    {# {{ form.hidden_tag() }} #} 
+
     <table class="table table-striped">
     <tr><th>Name</th><th>Email</th><th>Aktiivinen</th><th>Poista</th></tr>    
         {% for user in users %}
@@ -55,9 +63,7 @@ return false;
     <input class="btn btn-primary" type="submit" name="painike" value="Tallenna">
     </form>
     {% if pagination %}
-    <div class="pagination">
     {{ macros.pagination_widget(pagination, '.users') }}
-    </div>
     {% endif %}
     {% endif %}
 </div>

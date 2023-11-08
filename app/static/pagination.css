@@ -1,0 +1,72 @@
+.pagination {
+    /*display: table;*/
+    width:fit-content;
+    margin-top: 20px; 
+    padding: 10px;  
+    background: linear-gradient(to right, #eee, #ddd);  
+    border-radius: 5px;  
+    text-align: center;  
+}
+
+.pagination a, .pagination span, pagination li {
+    display: inline-block;
+    padding: 4px 12px;
+    margin-right: 4px;
+    border-radius: 3px;
+    border: solid 1px #ddd;
+    text-decoration: none;
+    color: #333;
+    font-size: 16px;
+}
+
+.pagination a:hover, .pagination a:focus {
+    background-color: #ccc;
+}
+
+.pagination a.disabled, .pagination span.disabled, .pagination li.disabled a {
+    color: #ddd;
+    border-color: #ddd;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.pagination li.active a {
+    color: #fff;
+    border-color: #ddd;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+
+.pagination span {
+    background-color: #eee;
+    color: #333;
+    border-color: #ddd;
+}
+
+.equal-width {
+    display: inline-block;
+    width: 2em;
+    text-align: center;
+}
+
+.pagination i.fas {
+    font-size: 14px;  /* Adjusts the size of the icons */
+    color: #888;      /* Adjusts the color to a lighter grey */
+}
+
+table {
+    max-width: 500px;
+    border: 1px solid #ddd;
+    }
+
+
+.narrow {
+    width: 10%;
+    white-space: nowrap;
+}
+
+.wide {
+    width: 25%;
+    white-space: nowrap;
+}

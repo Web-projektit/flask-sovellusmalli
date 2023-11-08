@@ -2,7 +2,7 @@
 <ul class="pagination">
     <li{% if not pagination.has_prev %} class="disabled"{% endif %}>
         <a href="{% if pagination.has_prev %}{{ url_for(endpoint, page=pagination.prev_num, **kwargs) }}{% else %}#{% endif %}">
-            &laquo;
+        <i class="fas fa-angle-left fa-fw"></i>
         </a>
     </li>
     {% for p in pagination.iter_pages() %}
@@ -22,7 +22,7 @@
     {% endfor %}
     <li{% if not pagination.has_next %} class="disabled"{% endif %}>
         <a href="{% if pagination.has_next %}{{ url_for(endpoint, page=pagination.next_num, **kwargs) }}{% else %}#{% endif %}">
-            &raquo;
+        <i class="fas fa-angle-right fa-fw"></i>
         </a>
     </li>
 </ul>
