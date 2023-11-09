@@ -34,6 +34,13 @@ def img(filename = None):
         basedir = os.path.abspath('.')
         kuvapolku = os.path.join(basedir, app.config['KUVAPOLKU'])
         print("ABSOLUUTTINEN KUVAPOLKU:"+kuvapolku)
+        # Lähetä tiedosto vain jos se olemassa
+        '''
+        if os.path.isfile(os.path.join(kuvapolku, filename)):
+            return send_from_directory(kuvapolku, filename)
+        else:
+            abort(404)
+        '''    
         # return send_from_directory('c://projektit/flask-sovellusmalli/app/profiilikuvat/', filename)
         return send_from_directory(kuvapolku, filename)
     

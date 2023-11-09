@@ -19,11 +19,6 @@ class Config:
     FS_POSTS_PER_PAGE = 25
     KUVAPALVELU = 'local'
     KUVAPOLKU = 'app/profiilikuvat/'
-
-    # Tarkista, onko kuvapolku olemassa
-    if not os.path.exists(KUVAPOLKU):
-        os.makedirs(KUVAPOLKU)
-
     MAX_CONTENT_LENGTH = 1 * 1000 * 1000
 
     # AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
@@ -89,6 +84,11 @@ class AzureConfig(Config):
     # tallenna migrations-kansio uudella nimellä
     # poista tarvittaessa vanha alembic-taulu
     # uusi migraatioprosessi: flask db init, flask db migrate, flask db upgrade
+    # Huom. Tätä ei ole testattu
+    def __init__(self):
+        super().__init__()
+        if not os.path.exists(self.KUVAPOLKU):
+            os.makedirs(self.KUVAPOLKU)
     DB_USERNAME = os.environ.get('AZURE_DB_USERNAME') or 'root'
     DB_PASSWORD = os.environ.get('AZURE_DB_PASSWORD') or ''
     DB_NAME = os.environ.get('AZURE_DB_NAME') or 'flask_sovellusmalli'
