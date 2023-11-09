@@ -51,7 +51,7 @@ gitlog.txt
 #migrations_kehitys_8h
 migrations_*
 commitit*
-app/profiilikuvat/*
-!app/profiilikuvat/
-react/react-sovellusmalli_old
+# poista sisältö, jätä kansio
+!app/profiilikuvat/default_profile.png
+app/profiilikuvat/* 
 flasksovellus.py

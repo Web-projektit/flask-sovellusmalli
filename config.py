@@ -19,6 +19,11 @@ class Config:
     FS_POSTS_PER_PAGE = 25
     KUVAPALVELU = 'local'
     KUVAPOLKU = 'app/profiilikuvat/'
+
+    # Tarkista, onko kuvapolku olemassa
+    if not os.path.exists(KUVAPOLKU):
+        os.makedirs(KUVAPOLKU)
+
     MAX_CONTENT_LENGTH = 1 * 1000 * 1000
 
     # AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
