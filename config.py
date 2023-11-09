@@ -17,8 +17,8 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     CORS_HEADERS = 'Content-Type'
     FS_POSTS_PER_PAGE = 25
-    KUVAPALVELU = 'S3'
-    KUVAPOLKU = os.environ.get('S3_DOMAIN')
+    KUVAPALVELU = 'local'
+    KUVAPOLKU = 'app/profiilikuvat/'
     MAX_CONTENT_LENGTH = 1 * 1000 * 1000
 
     # AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
@@ -37,8 +37,6 @@ class LocalConfig(Config):
     # SQLALCHEMY_ECHO = True (dokumentaatio)
     SQLALCHEMY_ECHO = "debug"
     WTF_CSRF_ENABLED = True
-    KUVAPALVELU = 'local'
-    KUVAPOLKU = 'app/profiilikuvat/'
     REACT_ORIGIN = 'http://localhost:3000/react-sovellusmalli/'
     # REACT_ORIGIN = '/react-sovellusmalli/'
     REACT_LOGIN = REACT_ORIGIN + 'login'
@@ -66,6 +64,8 @@ class HerokuConfig(Config):
     MAIL_PASSWORD = os.environ.get('SENDGRID_MAIL_PASSWORD')
     FS_MAIL_SENDER = 'wohjelmointi@gmail.com'
     # WTF_CSRF_ENABLED = False    
+    KUVAPALVELU = 'S3'
+    KUVAPOLKU = os.environ.get('S3_DOMAIN')
 
 class TestingConfig(Config):
     TESTING = True
