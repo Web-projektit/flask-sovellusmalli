@@ -1,4 +1,5 @@
-from flask import render_template, redirect, jsonify, url_for, abort, flash, current_app, request, send_from_directory, send_file
+from flask import render_template, redirect, jsonify, url_for, abort, flash, \
+     current_app, request, send_from_directory, send_file, Response 
 from flask_login import login_required, current_user
 from . import main
 from .forms import EditProfileForm, EditProfileAdminForm
@@ -10,6 +11,7 @@ from botocore.client import Config
 from werkzeug.utils import secure_filename
 from werkzeug.exceptions import RequestEntityTooLarge
 from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient
+import io
 # from azure.core.exceptions import ResourceNotFoundError
 
 ALLOWED_EXTENSIONS = { 'pdf', 'png', 'jpg', 'jpeg', 'gif' }
@@ -48,15 +50,26 @@ def img(filename = None):
         # Azure Blob Storage, anonyymi lukuoikeus blobiin
         filename = app.config['KUVAPOLKU'] + filename
         try:
+            '''
             blob_service_client = BlobServiceClient.from_connection_string(app.config['AZURE_STORAGE_CONNECTION_STRING'])
             container_client = blob_service_client.get_container_client(app.config['AZURE_STORAGE_CONTAINER'])
             blob_client = container_client.get_blob_client(filename)
             blob_data = blob_client.download_blob()
+            '''
+            # Azure Blob Storage setup
+            CONTAINER = app.config['AZURE_STORAGE_CONTAINER']
+            blob_service_client = BlobServiceClient.from_connection_string(app.config['AZURE_STORAGE_CONNECTION_STRING'])
+            blob_client = blob_service_client.get_blob_client(container=CONTAINER, blob=filename)
+
+            # Get the blob's data
+            blob_data = blob_client.download_blob()
+            data = blob_data.readall()
+            return Response(data, mimetype=blob_data.properties.content_settings.content_type)
+
         except Exception as e:
+            app.logger.exception("Error occurred")
             app.logger.info(e)
             abort(404)
-        else:
-            return send_file(blob_data.content_as_bytes(), attachment_filename=filename)
         
     
 @main.route('/user/<username>')

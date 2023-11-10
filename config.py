@@ -98,7 +98,7 @@ class AzureConfig(Config):
     # Huom. kuvien oletussijainti oli AWS S3, tässä se on Azure Blob Storage
     KUVAPALVELU = 'Azure'
     AZURE_STORAGE_CONNECTION_STRING = os.environ.get('AZURE_STORAGE_CONNECTION_STRING') or 'DefaultEndpointsProtocol=https;AccountName=flasksovellusmalli;AccountKey=;EndpointSuffix=core.windows.net'
-    AZURE_CONTAINER = os.environ.get('AZURE_STORAGE_CONTAINER') or 'kuvat'
+    AZURE_STORAGE_CONTAINER = os.environ.get('AZURE_STORAGE_CONTAINER') or 'kuvat'
     WTF_CSRF_ENABLED = True
     # WTF_CSRF_HEADERS= ['X-Csrftoken']
     # WTF_CSRF_SSL_STRICT = True
@@ -112,7 +112,17 @@ class AzureConfig(Config):
     CSRF_TRUSTED_ORIGINS = ['https://' + os.environ.get('WEBSITE_HOSTNAME')] 
     SESSION_COOKIE_SECURE = True
     SESSION_COOKIE_SAMESITE = 'None'
-    
+
+class AzureOmniaConfig(AzureConfig):
+    DB_USERNAME = os.environ.get('AZURE_OMNIA_DB_USERNAME') or 'root'
+    DB_PASSWORD = os.environ.get('AZURE_OMNIA_DB_PASSWORD') or ''
+    DB_NAME = os.environ.get('AZURE_OMNIA_DB_NAME') or 'flask_sovellusmalli'
+    DB_SERVER = os.environ.get('AZURE_OMNIA_DB_SERVER') or 'localhost:3306'
+    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://' + DB_USERNAME + ':' + DB_PASSWORD + '@' + DB_SERVER + '/' + DB_NAME
+    # Huom. kuvien oletussijainti oli AWS S3, tässä se on Azure Blob Storage
+    # Näiden tarpeellisuus tulisi testata
+    CSRF_TRUSTED_ORIGINS = ['https://' + os.environ.get('OMNIA_WEBSITE_HOSTNAME')] 
+
 class AzureStaticConfig(AzureConfig):
     REACT_ORIGIN = os.environ.get('REACT_ORIGIN_STATIC') or '/react-sovellusmalli/'
     REACT_LOGIN = REACT_ORIGIN + 'login'
@@ -127,6 +137,7 @@ config = {
     'xampp': XamppConfig,
     'heroku': HerokuConfig,
     'azure': AzureConfig,
+    'azureomnia': AzureOmniaConfig,
     'azurestatic': AzureStaticConfig,
     'default': DevelopmentConfig
 }

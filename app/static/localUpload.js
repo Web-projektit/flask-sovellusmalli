@@ -20,7 +20,11 @@ fetch(url,{
     })
 .then(success => {
     console.log(success)  
-    if (success.msg){
+    if (success.virhe) {
+        // alert(success.virhe)
+        document.querySelector('#invalid-image').innerHTML = success.virhe
+        }    
+    else if (success.msg){
         // document.querySelector('#img').value = file.name;
         /* Huom. file.name saattaa sisältää merkkejä, jotka secure_filename
            suodattaa pois tiedoston nimestä tiedostoa tallennettaessa. 
@@ -32,11 +36,7 @@ fetch(url,{
         document.querySelector('#img').value = success.img
         document.querySelector('#invalid-image').innerHTML = ''
         alert(success.msg)
-    }
-    else if (success.virhe) {
-        // alert(success.virhe)
-        document.querySelector('#invalid-image').innerHTML = success.virhe
-    }    
+        }
     })
 .catch(error => {
     console.log(error.message)
