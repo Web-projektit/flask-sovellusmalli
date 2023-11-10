@@ -1,3 +1,0 @@
-2023-11-10 18:36:18 shorten DALLE_2023-11-09_13.36.34_-_A_64-year-old_Caucasian_man_without_a_beard_coding_on_a_laptop_by_the_shore_of_a_lake._He_is_casually_dressed_with_a_focus_and_concentration_on_his_.png, tulos: DALLE_2023-11-09_13.png
-2023-11-10 18:43:13 shorten DALLE_2023-11-09_13.36.34_-_A_64-year-old_Caucasian_man_without_a_beard_coding_on_a_laptop_by_the_shore_of_a_lake._He_is_casually_dressed_with_a_focus_and_concentration_on_his_.png, tulos: DA.png
-2023-11-10 18:47:44 shorten DALLE_2023-11-09_13.36.34_-_A_64-year-old_Caucasian_man_without_a_beard_coding_on_a_laptop_by_the_shore_of_a_lake._He_is_casually_dressed_with_a_focus_and_concentration_on_his_.png, tulos: DALLE_2023-11-09_13.36.34_-_A_64-year-old_Caucasian_man_with.png

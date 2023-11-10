@@ -53,6 +53,7 @@ gitlog.txt
 migrations_*
 commitit*
 # poista sisältö, jätä kansio
+app/profiilikuvat/*
 profiilikuvat/*
 !profiilikuvat/default_profile.png 
 debug_log.txt
