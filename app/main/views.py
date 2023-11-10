@@ -5,16 +5,22 @@ from . import main
 from .forms import EditProfileForm, EditProfileAdminForm
 from .. import db
 from ..models import Role, User
-from ..decorators import admin_required
+from ..decorators import admin_required,debuggeri
 import os, json, boto3
 from botocore.client import Config
 from werkzeug.utils import secure_filename
 from werkzeug.exceptions import RequestEntityTooLarge
 from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient
-import io
 # from azure.core.exceptions import ResourceNotFoundError
 
 ALLOWED_EXTENSIONS = { 'pdf', 'png', 'jpg', 'jpeg', 'gif' }
+
+@debuggeri
+def shorten(filename):
+    # parts = filename.split('.') 
+    name, extension = os.path.splitext(filename)
+    length = 64 - len(extension)
+    return name[:length] + extension
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -29,22 +35,16 @@ def index():
 def img(filename = None):
     # Profiilikuvat Flask-sovelluskansiossa profiilikuvat,
     # paitsi oletusprofiilikuva static-kansiossa.
+    # Huom. S3-kuvapalvelun toteutus on kesken
     print("IMG:"+str(filename))
     app = current_app._get_current_object()
     if filename is None:
         return send_from_directory('static','default_profile.png')
     elif app.config['KUVAPALVELU'] == 'local':
-        # Huom. S3-kuvapalvelun toteutus on kesken
         basedir = os.path.abspath('.')
         kuvapolku = os.path.join(basedir, app.config['KUVAPOLKU'])
         print("ABSOLUUTTINEN KUVAPOLKU:"+kuvapolku)
         # Lähetä tiedosto vain jos se olemassa
-        '''
-        if os.path.isfile(os.path.join(kuvapolku, filename)):
-            return send_from_directory(kuvapolku, filename)
-        else:
-            abort(404)
-        '''  
         return send_from_directory(kuvapolku, filename)  
     elif app.config['KUVAPALVELU'] == 'Azure':
         # Azure Blob Storage, anonyymi lukuoikeus blobiin
@@ -285,7 +285,7 @@ def save_local():
         return json.dumps({'virhe':errmsg})
     
     if file and file.filename != '' and allowed_file(file.filename):
-        kuvanimi = secure_filename(file.filename)[:64]
+        kuvanimi = shorten(secure_filename(file.filename))
         filename = str(current_user.id) + '_' + kuvanimi
         if KUVAPALVELU == 'Azure':
             # Azure Blob Storage

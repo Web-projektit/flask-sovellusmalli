@@ -53,6 +53,6 @@ gitlog.txt
 migrations_*
 commitit*
 # poista sisältö, jätä kansio
-app/profiilikuvat/*
-!app/profiilikuvat/default_profile.png 
+profiilikuvat/*
+!profiilikuvat/default_profile.png 
 flasksovellus.py

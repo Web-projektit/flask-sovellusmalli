@@ -5,7 +5,7 @@ from app import create_app, db
 from app.models import User, Role, Permission
 
 flask_config = os.getenv('FLASK_CONFIG') or 'default'
-print("app,FLASK_FONFIG:" + flask_config)
+print("app,FLASK_CONFIG:" + flask_config)
 app = create_app(flask_config)
 migrate = Migrate(app, db)
 
