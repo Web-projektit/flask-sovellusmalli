@@ -55,4 +55,5 @@ commitit*
 # poista sisältö, jätä kansio
 profiilikuvat/*
 !profiilikuvat/default_profile.png 
+debug_log.txt
 flasksovellus.py
