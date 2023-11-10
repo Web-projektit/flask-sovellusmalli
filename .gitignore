@@ -42,6 +42,7 @@ nosetests.xml
 .venv*
 .env
 .vscode
+requirements_*.txt
 envvars.txt
 heroku_configvars.txt
 gitlog.txt

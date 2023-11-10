@@ -97,8 +97,8 @@ class AzureConfig(Config):
     SQLALCHEMY_ECHO = "debug"
     # Huom. kuvien oletussijainti oli AWS S3, tässä se on Azure Blob Storage
     KUVAPALVELU = 'Azure'
-    AZURE_CONNECTION_STRING = os.environ.get('AZURE_CONNECTION_STRING') or 'DefaultEndpointsProtocol=https;AccountName=flasksovellusmalli;AccountKey=;EndpointSuffix=core.windows.net'
-    AZURE_CONTAINER = os.environ.get('AZURE_CONTAINER') or 'kuvat'
+    AZURE_STORAGE_CONNECTION_STRING = os.environ.get('AZURE_STORAGE_CONNECTION_STRING') or 'DefaultEndpointsProtocol=https;AccountName=flasksovellusmalli;AccountKey=;EndpointSuffix=core.windows.net'
+    AZURE_CONTAINER = os.environ.get('AZURE_STORAGE_CONTAINER') or 'kuvat'
     WTF_CSRF_ENABLED = True
     # WTF_CSRF_HEADERS= ['X-Csrftoken']
     # WTF_CSRF_SSL_STRICT = True
