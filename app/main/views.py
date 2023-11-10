@@ -42,9 +42,22 @@ def img(filename = None):
             return send_from_directory(kuvapolku, filename)
         else:
             abort(404)
-        '''    
-        # return send_from_directory('c://projektit/flask-sovellusmalli/app/profiilikuvat/', filename)
-        return send_from_directory(kuvapolku, filename)
+        '''  
+        return send_from_directory(kuvapolku, filename)  
+    elif app.config['KUVAPALVELU'] == 'Azure':
+        # Azure Blob Storage, anonyymi lukuoikeus blobiin
+        filename = app.config['KUVAPOLKU'] + filename
+        try:
+            blob_service_client = BlobServiceClient.from_connection_string(app.config['AZURE_STORAGE_CONNECTION_STRING'])
+            container_client = blob_service_client.get_container_client(app.config['AZURE_STORAGE_CONTAINER'])
+            blob_client = container_client.get_blob_client(filename)
+            blob_data = blob_client.download_blob()
+        except Exception as e:
+            app.logger.info(e)
+            abort(404)
+        else:
+            return send_file(blob_data.content_as_bytes(), attachment_filename=filename)
+        
     
 @main.route('/user/<username>')
 def user(username):
