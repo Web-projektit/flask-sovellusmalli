@@ -18,7 +18,7 @@ class Config:
     CORS_HEADERS = 'Content-Type'
     FS_POSTS_PER_PAGE = 25
     KUVAPALVELU = 'local'
-    KUVAPOLKU = 'app/profiilikuvat/'
+    KUVAPOLKU = 'profiilikuvat/'
     MAX_CONTENT_LENGTH = 2 * 1000 * 1000
 
     # AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
@@ -28,7 +28,7 @@ class Config:
     def init_app(app):
         if app.config['KUVAPALVELU'] == 'local':
             if not os.path.exists(app.config['KUVAPOLKU']):
-                os.makedirs(app.config['KUVAPALVELU'])
+                os.makedirs(app.config['KUVAPOLKU'])
         # pass
 
 class LocalConfig(Config):
@@ -95,7 +95,10 @@ class AzureConfig(Config):
     # print("SQLALCHEMY_DATABASE_URI Azure-palvelimelle " + DB_SERVER)
     # SQLALCHEMY_ECHO = True
     SQLALCHEMY_ECHO = "debug"
-    # Huom. kuvien oletussijainti on AWS S3
+    # Huom. kuvien oletussijainti oli AWS S3, tässä se on Azure Blob Storage
+    KUVAPALVELU = 'Azure'
+    AZURE_CONNECTION_STRING = os.environ.get('AZURE_CONNECTION_STRING') or 'DefaultEndpointsProtocol=https;AccountName=flasksovellusmalli;AccountKey=;EndpointSuffix=core.windows.net'
+    AZURE_CONTAINER = os.environ.get('AZURE_CONTAINER') or 'kuvat'
     WTF_CSRF_ENABLED = True
     # WTF_CSRF_HEADERS= ['X-Csrftoken']
     # WTF_CSRF_SSL_STRICT = True

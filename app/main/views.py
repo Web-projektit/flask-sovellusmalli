@@ -9,6 +9,8 @@ import os, json, boto3
 from botocore.client import Config
 from werkzeug.utils import secure_filename
 from werkzeug.exceptions import RequestEntityTooLarge
+from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient
+# from azure.core.exceptions import ResourceNotFoundError
 
 ALLOWED_EXTENSIONS = { 'pdf', 'png', 'jpg', 'jpeg', 'gif' }
 
@@ -243,6 +245,7 @@ def save_local():
     # cwd = os.getcwd()
     # print("WORKING DIRECTORY:"+cwd)
     app = current_app._get_current_object()
+    KUVAPALVELU = app.config['KUVAPALVELU']
     KUVAPOLKU = app.config['KUVAPOLKU']
     virhe = ''
     msg = ''
@@ -258,7 +261,21 @@ def save_local():
     if file and file.filename != '' and allowed_file(file.filename):
         kuvanimi = secure_filename(file.filename)[:64]
         filename = str(current_user.id) + '_' + kuvanimi
-        file.save(os.path.join(KUVAPOLKU, filename))
+        if KUVAPALVELU == 'Azure':
+            # Azure Blob Storage
+            filename = KUVAPOLKU + filename
+            try:
+                blob_service_client = BlobServiceClient.from_connection_string(app.config['AZURE_STORAGE_CONNECTION_STRING'])
+                container_client = blob_service_client.get_container_client(app.config['AZURE_STORAGE_CONTAINER'])
+                blob_client = container_client.get_blob_client(filename)
+                blob_client.upload_blob(file)
+            except Exception as e:
+                app.logger.info(e)
+                virhe = "Virhe tiedoston tallennuksessa."
+            else:
+                msg = f"Tiedosto tallennettiin nimellä {filename}."
+        else:    
+            file.save(os.path.join(KUVAPOLKU, filename))
         msg = f"Tiedosto tallennettiin nimellä {filename}."
     else:
         virhe = "Tiedostoa ei annettu."
