@@ -136,7 +136,7 @@ class AzureOmniaConfig(AzureConfig):
     # Näiden tarpeellisuus tulisi testata
     CSRF_TRUSTED_ORIGINS = ['https://' + os.environ.get('OMNIA_WEBSITE_HOSTNAME')] 
 
-class AzureOmniaHomeConfig(AzureOmniaConfig):
+class AzureOmniaHomeConfig(AzureConfig):
     # Huom. kuvien oletussijainti oli Azure Blob Storage, tässä se on /home/site/wwwroot/profiilikuvat
     home = os.environ.get('HOME') or '/home'
     KUVAPALVELU = 'AzureHome'
