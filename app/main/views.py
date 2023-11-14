@@ -46,6 +46,9 @@ def img(filename = None):
         print("ABSOLUUTTINEN KUVAPOLKU:"+kuvapolku)
         # Lähetä tiedosto vain jos se olemassa
         return send_from_directory(kuvapolku, filename)  
+    elif app.config['KUVAPALVELU'] == 'AzureHome':
+        # Lähetä tiedosto vain jos se olemassa
+        return send_from_directory(app.config['KUVAPOLKU'], filename)  
     elif app.config['KUVAPALVELU'] == 'Azure':
         # Azure Blob Storage, anonyymi lukuoikeus blobiin
         filename = app.config['KUVAPOLKU'] + filename

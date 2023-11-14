@@ -1,4 +1,5 @@
 import os
+import sys
 from dotenv import load_dotenv
 basedir = os.path.abspath(os.path.dirname(__file__))
 load_dotenv(os.path.join(basedir, '.env'))
@@ -27,8 +28,18 @@ class Config:
     @staticmethod
     def init_app(app):
         if app.config['KUVAPALVELU'] == 'local':
-            if not os.path.exists(app.config['KUVAPOLKU']):
-                os.makedirs(app.config['KUVAPOLKU'])
+            kuvapolku = app.config['KUVAPOLKU']
+            if not os.path.exists(kuvapolku):
+                os.makedirs(kuvapolku)
+        elif app.config['KUVAPALVELU'] == 'AzureHome':
+            kuvapolku = app.config['KUVAPOLKU']
+            sys.stderr.write(f'The home directory is: {kuvapolku}\n')
+            if not os.path.exists(kuvapolku):
+                try:
+                    os.makedirs(kuvapolku)
+                except PermissionError:
+                    errmsg = f'Permission denied: Unable to create directory {kuvapolku}.'
+                    sys.stderr.write(errmsg + '\n')
         # pass
 
 class LocalConfig(Config):
@@ -123,6 +134,13 @@ class AzureOmniaConfig(AzureConfig):
     # Näiden tarpeellisuus tulisi testata
     CSRF_TRUSTED_ORIGINS = ['https://' + os.environ.get('OMNIA_WEBSITE_HOSTNAME')] 
 
+class AzureOmniaHomeConfig(AzureOmniaConfig):
+    # Huom. kuvien oletussijainti oli Azure Blob Storage, tässä se on /home/site/wwwroot/profiilikuvat
+    home = os.environ.get('HOME') or '/home'
+    KUVAPALVELU = 'AzureHome'
+    KUVAPOLKU = home + '/site/wwwroot/profiilikuvat/'
+
+
 class AzureStaticConfig(AzureConfig):
     REACT_ORIGIN = os.environ.get('REACT_ORIGIN_STATIC') or '/react-sovellusmalli/'
     REACT_LOGIN = REACT_ORIGIN + 'login'
@@ -138,6 +156,7 @@ config = {
     'heroku': HerokuConfig,
     'azure': AzureConfig,
     'azureomnia': AzureOmniaConfig,
+    'azureomniahome': AzureOmniaHomeConfig,
     'azurestatic': AzureStaticConfig,
     'default': DevelopmentConfig
 }
