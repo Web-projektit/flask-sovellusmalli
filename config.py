@@ -40,6 +40,8 @@ class Config:
                 except PermissionError:
                     errmsg = f'Permission denied: Unable to create directory {kuvapolku}.'
                     sys.stderr.write(errmsg + '\n')
+                    app.logger.exception(errmsg)
+                    app.logger.info(PermissionError)
         # pass
 
 class LocalConfig(Config):
@@ -138,7 +140,7 @@ class AzureOmniaHomeConfig(AzureOmniaConfig):
     # Huom. kuvien oletussijainti oli Azure Blob Storage, tässä se on /home/site/wwwroot/profiilikuvat
     home = os.environ.get('HOME') or '/home'
     KUVAPALVELU = 'AzureHome'
-    KUVAPOLKU = home + '/site/wwwroot/profiilikuvat/'
+    KUVAPOLKU = home + '/profiilikuvat/'
 
 
 class AzureStaticConfig(AzureConfig):
