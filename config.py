@@ -33,7 +33,9 @@ class Config:
                 os.makedirs(kuvapolku)
         elif app.config['KUVAPALVELU'] == 'AzureHome':
             kuvapolku = app.config['KUVAPOLKU']
-            sys.stderr.write(f'The home directory is: {kuvapolku}\n')
+            msg = f'The home directory is: {kuvapolku}.\n'
+            app.logger.info(msg)
+            sys.stderr.write(msg)
             if not os.path.exists(kuvapolku):
                 try:
                     os.makedirs(kuvapolku)
@@ -121,12 +123,14 @@ class AzureConfig(Config):
     REACT_LOGIN = REACT_ORIGIN + 'login'
     REACT_UNCONFIRMED = REACT_ORIGIN + 'unconfirmed'
     REACT_CONFIRMED = REACT_ORIGIN + 'confirmed'
-    # Näiden tarpeellisuus tulisi testata
+    # Näiden tarpeellisuus tulisi testata, huom. WEBSITE_HOSTNAME on Azuressa valmiina
     CSRF_TRUSTED_ORIGINS = ['https://' + os.environ.get('WEBSITE_HOSTNAME')] 
     SESSION_COOKIE_SECURE = True
     SESSION_COOKIE_SAMESITE = 'None'
 
 class AzureOmniaConfig(AzureConfig):
+    # Huom. Azuressa ympäristömuuttujien nimet ovat samat kuin Azure Omnia -palvelimella,
+    # mutta niiden arvot ovat erilaiset, ja tämä konfiguraatio on tarpeeton.
     DB_USERNAME = os.environ.get('AZURE_OMNIA_DB_USERNAME') or 'root'
     DB_PASSWORD = os.environ.get('AZURE_OMNIA_DB_PASSWORD') or ''
     DB_NAME = os.environ.get('AZURE_OMNIA_DB_NAME') or 'flask_sovellusmalli'
@@ -134,13 +138,17 @@ class AzureOmniaConfig(AzureConfig):
     SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://' + DB_USERNAME + ':' + DB_PASSWORD + '@' + DB_SERVER + '/' + DB_NAME
     # Huom. kuvien oletussijainti oli AWS S3, tässä se on Azure Blob Storage
     # Näiden tarpeellisuus tulisi testata
-    CSRF_TRUSTED_ORIGINS = ['https://' + os.environ.get('OMNIA_WEBSITE_HOSTNAME')] 
 
 class AzureOmniaHomeConfig(AzureConfig):
-    # Huom. kuvien oletussijainti oli Azure Blob Storage, tässä se on /home/site/wwwroot/profiilikuvat
-    home = os.environ.get('HOME') or '/home'
+    # Huom. kuvien oletussijainti oli Azure Blob Storage, 
+    # tässä se on /home/profiilikuvat, kenties jatkossa 
+    # /home/site/wwwroot/profiilikuvat
+    # home = os.environ.get('HOME') or '/home'
+    # home = home.replace('\\', '/')
+    home = '/home'
     KUVAPALVELU = 'AzureHome'
     KUVAPOLKU = home + '/profiilikuvat/'
+ 
 
 
 class AzureStaticConfig(AzureConfig):
