@@ -15,11 +15,11 @@ from sqlalchemy.pool import QueuePool
 
 logging.getLogger('flask_cors').level = logging.DEBUG
 # Tulostukset Azuren konsoliin 
-# logger = logging.getLogger('flask_app')
-# logger.setLevel(logging.DEBUG)
+logger = logging.getLogger('flask_app')
+logger.setLevel(logging.DEBUG)
 # Configure a logging handler to capture stdout messages
-# stdout_handler = logging.StreamHandler(sys.stdout)
-# logger.addHandler(stdout_handler)
+stdout_handler = logging.StreamHandler(sys.stdout)
+logger.addHandler(stdout_handler)
 
 bootstrap = Bootstrap()
 fa = FontAwesome()

@@ -145,9 +145,10 @@ class AzureOmniaHomeConfig(AzureConfig):
     # /home/site/wwwroot/profiilikuvat
     # home = os.environ.get('HOME') or '/home'
     # home = home.replace('\\', '/')
+    # KUVAPOLKU = home + '/profiilikuvat/'
     home = '/home'
     KUVAPALVELU = 'AzureHome'
-    KUVAPOLKU = home + '/profiilikuvat/'
+    KUVAPOLKU = os.path.join(home, 'profiilikuvat/')
  
 
 
