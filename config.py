@@ -5,7 +5,16 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 load_dotenv(os.path.join(basedir, '.env'))
 
 class Config:
-    SECRET_KEY = os.environ.get('SECRET_KEY') or 'hard to guess string'
+    '''
+    Ympäristökohtaiset konfiguraatiot periytetään tästä.
+    Konfiguraatioissa määritetään erityisesti 
+    - tietokanta-asetukset
+    - kuvien sijainti
+    - Flaskin debug-tila
+    - Virhelokien taso, esim. INFO, DEBUG, WARNING, ERROR
+    - CORS ja CSRF
+    '''
+    SECRET_KEY = os.environ.get('SECRET_KEY') or 'vaikeasti arvattava salasana'
     MAIL_SERVER = os.environ.get('MAILTRAP_MAIL_SERVER', 'smtp.mailtrap.io')
     MAIL_PORT = int(os.environ.get('MAILTRAP_MAIL_PORT', '2525'))
     MAIL_USE_TLS = os.environ.get('MAILTRAP_MAIL_USE_TLS', 'true').lower() in \
@@ -23,7 +32,6 @@ class Config:
     KUVAPALVELU = 'local'
     KUVAPOLKU = 'profiilikuvat/'
     MAX_CONTENT_LENGTH = 2 * 1000 * 1000
-
     # AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
     # AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
     
@@ -36,11 +44,14 @@ class Config:
         elif app.config['KUVAPALVELU'] == 'AzureHome':
             kuvapolku = app.config['KUVAPOLKU']
             msg_logger = f'The home directory is: {kuvapolku}.\n'
-            msg_stderr = f'Kotiosoite on: {kuvapolku}.\n'
-            msg_print = f'Kotiosoitteen tulostus on: {kuvapolku}.\n'
+            # msg_stderr = f'Kotiosoite on: {kuvapolku}.\n'
+            # msg_print = f'Kotiosoitteen tulostus on: {kuvapolku}.\n'
+            # Tulostuu Azuren virhekonsoliin:
             app.logger.info(msg_logger)
-            sys.stderr.write(msg_stderr)
-            print(msg_print)
+            # Tulostuu Azuren virhekonsoliin:
+            # sys.stderr.write(msg_stderr)
+            # Ei tulostu Azuren virhekonsoliin:
+            # print(msg_print)
             if not os.path.exists(kuvapolku):
                 try:
                     os.makedirs(kuvapolku)
@@ -130,7 +141,7 @@ class AzureConfig(Config):
     SESSION_COOKIE_SECURE = True
     SESSION_COOKIE_SAMESITE = 'None'
 
-class AzureOmniaConfig(AzureConfig):
+'''class AzureOmniaConfig(AzureConfig):
     # Huom. Azuressa ympäristömuuttujien nimet ovat samat kuin Azure Omnia -palvelimella,
     # mutta niiden arvot ovat erilaiset, ja tämä konfiguraatio on tarpeeton.
     DB_USERNAME = os.environ.get('AZURE_OMNIA_DB_USERNAME') or 'root'
@@ -138,17 +149,16 @@ class AzureOmniaConfig(AzureConfig):
     DB_NAME = os.environ.get('AZURE_OMNIA_DB_NAME') or 'flask_sovellusmalli'
     DB_SERVER = os.environ.get('AZURE_OMNIA_DB_SERVER') or 'localhost:3306'
     SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://' + DB_USERNAME + ':' + DB_PASSWORD + '@' + DB_SERVER + '/' + DB_NAME
-
+'''
 class AzureOmniaHomeConfig(AzureConfig):
     # Huom. kuvien oletussijainti oli Azure Blob Storage, 
-    # tässä se on /home/profiilikuvat, kenties jatkossa 
+    # tässä se on /home/profiilikuvat, voisi olla myös julkisesti saatavilla oleva URL 
     # /home/site/wwwroot/profiilikuvat
     # home = os.environ.get('HOME') or '/home'
     home = '/home'
     KUVAPALVELU = 'AzureHome'
     KUVAPOLKU = os.path.join(home, 'profiilikuvat/')
  
-
 class AzureStaticConfig(AzureConfig):
     REACT_ORIGIN = os.environ.get('REACT_ORIGIN_STATIC') or '/react-sovellusmalli/'
     REACT_LOGIN = REACT_ORIGIN + 'login'
@@ -163,7 +173,7 @@ config = {
     'xampp': XamppConfig,
     'heroku': HerokuConfig,
     'azure': AzureConfig,
-    'azureomnia': AzureOmniaConfig,
+    # 'azureomnia': AzureOmniaConfig,
     'azureomniahome': AzureOmniaHomeConfig,
     'azurestatic': AzureStaticConfig,
     'default': DevelopmentConfig

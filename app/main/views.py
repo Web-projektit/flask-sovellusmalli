@@ -26,6 +26,36 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+def tee_kuvanimi(id,kuva):
+    return str(id) + '_' + kuva
+
+def poista_vanha_kuva(id,kuva):
+    kuvanimi = tee_kuvanimi(id,kuva)
+    app = current_app._get_current_object()
+    KUVAPALVELU = app.config['KUVAPALVELU']
+    KUVAPOLKU = app.config['KUVAPOLKU']
+    filename = os.path.join(KUVAPOLKU, kuvanimi)
+    if KUVAPALVELU == 'Azure':
+        # Azure Blob Storage
+        try:
+            blob_service_client = BlobServiceClient.from_connection_string(app.config['AZURE_STORAGE_CONNECTION_STRING'])
+            container_client = blob_service_client.get_container_client(app.config['AZURE_STORAGE_CONTAINER'])
+            blob_client = container_client.get_blob_client(filename)
+            blob_client.delete_blob()
+        except Exception as e:
+            app.logger.info(e)
+            return False
+        else:
+            return True
+    else:
+        try:
+            os.remove(filename)
+        except Exception as e:
+            app.logger.info(e)
+            return False
+        else:   
+            return True
+
 @main.route('/')
 def index():
     return render_template('index.html')
@@ -37,28 +67,26 @@ def img(filename = None):
     # paitsi oletusprofiilikuva static-kansiossa.
     # Huom. S3-kuvapalvelun toteutus on kesken
     print("IMG:"+str(filename))
+    # app = current_app._get_current_object()
     app = current_app._get_current_object()
+    KUVAPALVELU = app.config['KUVAPALVELU']
+    KUVAPOLKU = app.config['KUVAPOLKU']
     if filename is None:
         return send_from_directory('static','default_profile.png')
-    elif app.config['KUVAPALVELU'] == 'local':
+    elif KUVAPALVELU == 'local':
         basedir = os.path.abspath('.')
-        kuvapolku = os.path.join(basedir, app.config['KUVAPOLKU'])
+        kuvapolku = os.path.join(basedir, KUVAPOLKU)
         print("ABSOLUUTTINEN KUVAPOLKU:"+kuvapolku)
-        # Lähetä tiedosto vain jos se olemassa
+        # Lähetä tiedosto (vain, jos se olemassa)
         return send_from_directory(kuvapolku, filename)  
-    elif app.config['KUVAPALVELU'] == 'AzureHome':
-        # Lähetä tiedosto vain jos se olemassa
-        return send_from_directory(app.config['KUVAPOLKU'], filename)  
-    elif app.config['KUVAPALVELU'] == 'Azure':
+    # elif app.config['KUVAPALVELU'] == 'AzureHome':
+    elif KUVAPALVELU == 'AzureHome':
+        # Lähetä tiedosto (vain, jos se olemassa)
+        return send_from_directory(KUVAPOLKU, filename)  
+    elif KUVAPALVELU == 'Azure':
         # Azure Blob Storage, anonyymi lukuoikeus blobiin
-        filename = app.config['KUVAPOLKU'] + filename
+        filename = os.path.join(KUVAPOLKU,filename)
         try:
-            '''
-            blob_service_client = BlobServiceClient.from_connection_string(app.config['AZURE_STORAGE_CONNECTION_STRING'])
-            container_client = blob_service_client.get_container_client(app.config['AZURE_STORAGE_CONTAINER'])
-            blob_client = container_client.get_blob_client(filename)
-            blob_data = blob_client.download_blob()
-            '''
             # Azure Blob Storage setup
             CONTAINER = app.config['AZURE_STORAGE_CONTAINER']
             blob_service_client = BlobServiceClient.from_connection_string(app.config['AZURE_STORAGE_CONNECTION_STRING'])
@@ -70,7 +98,7 @@ def img(filename = None):
             return Response(data, mimetype=blob_data.properties.content_settings.content_type)
 
         except Exception as e:
-            app.logger.exception("Error occurred")
+            app.logger.exception("Virhe kuvan lähetyksessä Azure Blob Storagesta")
             app.logger.info(e)
             abort(404)
         
@@ -79,7 +107,7 @@ def img(filename = None):
 def user(username):
     user = User.query.filter_by(username=username).first_or_404()
     if user.img:
-        kuva = str(current_user.id) + '_' + current_user.img 
+        kuva = tee_kuvanimi(current_user.id,current_user.img) 
     else:
         kuva = '' 
     print("KUVA:"+kuva)
@@ -108,18 +136,20 @@ def edit_profile_all():
     # Profiili, jossa on myös profiilikuva
     form = EditProfileForm()
     app = current_app._get_current_object()
-    kuvapalvelu = app.config['KUVAPALVELU']
+    KUVAPALVELU = app.config['KUVAPALVELU']
     KUVAPOLKU = app.config['KUVAPOLKU']
     if form.validate_on_submit():
         # check if the post request has the file part
         kuvanimi = form.img.data
+        if kuvanimi and current_user.img:
+            poista_vanha_kuva(current_user.id,current_user.img)
         if 'file' in request.files and file.filename != '':
             file = request.files['file']
             if file and allowed_file(file.filename):
                 # Lomakkeelta lähetettynä paikallinen tallennus,
-                # S3-tallennus tehty erikseen Javascriptillä
+                # S3- ja Azure-tallennus tehty erikseen Javascriptillä
                 kuvanimi = secure_filename(file.filename)
-                filename = str(current_user.id) + '_' + kuvanimi
+                filename = tee_kuvanimi(current_user.id,kuvanimi)
                 file.save(os.path.join(KUVAPOLKU, filename))
         current_user.name = form.name.data
         current_user.location = form.location.data
@@ -289,7 +319,7 @@ def save_local():
     
     if file and file.filename != '' and allowed_file(file.filename):
         kuvanimi = shorten(secure_filename(file.filename))
-        filename = str(current_user.id) + '_' + kuvanimi
+        filename = tee_kuvanimi(current_user.id,kuvanimi)
         if KUVAPALVELU == 'Azure':
             # Azure Blob Storage
             filename = KUVAPOLKU + filename
