@@ -16,6 +16,8 @@ class Config:
     FS_MAIL_SENDER = 'Flaskprojekti Admin <flaskprojekti@example.com>'
     FS_ADMIN = os.environ.get('FS_ADMIN')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    # Kaikki SQL-kyselyt parametreineen ja tuloksineen tulostetaan konsoliin
+    SQLALCHEMY_ECHO = "debug"
     CORS_HEADERS = 'Content-Type'
     FS_POSTS_PER_PAGE = 25
     KUVAPALVELU = 'local'
@@ -33,9 +35,12 @@ class Config:
                 os.makedirs(kuvapolku)
         elif app.config['KUVAPALVELU'] == 'AzureHome':
             kuvapolku = app.config['KUVAPOLKU']
-            msg = f'The home directory is: {kuvapolku}.\n'
-            app.logger.info(msg)
-            sys.stderr.write(msg)
+            msg_logger = f'The home directory is: {kuvapolku}.\n'
+            msg_stderr = f'Kotiosoite on: {kuvapolku}.\n'
+            msg_print = f'Kotiosoitteen tulostus on: {kuvapolku}.\n'
+            app.logger.info(msg_logger)
+            sys.stderr.write(msg_stderr)
+            print(msg_print)
             if not os.path.exists(kuvapolku):
                 try:
                     os.makedirs(kuvapolku)
@@ -52,8 +57,8 @@ class LocalConfig(Config):
     DB_PASSWORD = os.environ.get('LOCAL_DB_PASSWORD') or ''
     DB_NAME = os.environ.get('LOCAL_DB_NAME') or 'flask_sovellusmalli'
     SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://' + DB_USERNAME + ':' + DB_PASSWORD + '@localhost:3306/' + DB_NAME
-    # SQLALCHEMY_ECHO = True (dokumentaatio)
-    SQLALCHEMY_ECHO = "debug"
+    # Kaikki SQL-kyselyt tulostetaan konsoliin, vrt. SQLALCHEMY_ECHO = "debug"
+    # SQLALCHEMY_ECHO = True
     WTF_CSRF_ENABLED = True
     REACT_ORIGIN = 'http://localhost:3000/react-sovellusmalli/'
     # REACT_ORIGIN = '/react-sovellusmalli/'
@@ -73,7 +78,6 @@ class XamppConfig(LocalConfig):
     
 class HerokuConfig(Config):
     SQLALCHEMY_DATABASE_URI = os.environ.get('CLEARDB_DATABASE_URL')
-    SQLALCHEMY_ECHO = "debug"
     MAIL_SERVER = os.environ.get('SENDGRID_MAIL_SERVER', 'smtp.sendgrid.net')
     MAIL_PORT = int(os.environ.get('SENDGRID_MAIL_PORT', '587'))
     MAIL_USE_TLS = os.environ.get('SENDGRID_MAIL_USE_TLS', 'true')
@@ -108,8 +112,6 @@ class AzureConfig(Config):
     DB_SERVER = os.environ.get('AZURE_DB_SERVER') or 'localhost:3306'
     SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://' + DB_USERNAME + ':' + DB_PASSWORD + '@' + DB_SERVER + '/' + DB_NAME
     # print("SQLALCHEMY_DATABASE_URI Azure-palvelimelle " + DB_SERVER)
-    # SQLALCHEMY_ECHO = True
-    SQLALCHEMY_ECHO = "debug"
     # Huom. kuvien oletussijainti oli AWS S3, tässä se on Azure Blob Storage
     KUVAPALVELU = 'Azure'
     AZURE_STORAGE_CONNECTION_STRING = os.environ.get('AZURE_STORAGE_CONNECTION_STRING') or 'DefaultEndpointsProtocol=https;AccountName=flasksovellusmalli;AccountKey=;EndpointSuffix=core.windows.net'
@@ -136,21 +138,16 @@ class AzureOmniaConfig(AzureConfig):
     DB_NAME = os.environ.get('AZURE_OMNIA_DB_NAME') or 'flask_sovellusmalli'
     DB_SERVER = os.environ.get('AZURE_OMNIA_DB_SERVER') or 'localhost:3306'
     SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://' + DB_USERNAME + ':' + DB_PASSWORD + '@' + DB_SERVER + '/' + DB_NAME
-    # Huom. kuvien oletussijainti oli AWS S3, tässä se on Azure Blob Storage
-    # Näiden tarpeellisuus tulisi testata
 
 class AzureOmniaHomeConfig(AzureConfig):
     # Huom. kuvien oletussijainti oli Azure Blob Storage, 
     # tässä se on /home/profiilikuvat, kenties jatkossa 
     # /home/site/wwwroot/profiilikuvat
     # home = os.environ.get('HOME') or '/home'
-    # home = home.replace('\\', '/')
-    # KUVAPOLKU = home + '/profiilikuvat/'
     home = '/home'
     KUVAPALVELU = 'AzureHome'
     KUVAPOLKU = os.path.join(home, 'profiilikuvat/')
  
-
 
 class AzureStaticConfig(AzureConfig):
     REACT_ORIGIN = os.environ.get('REACT_ORIGIN_STATIC') or '/react-sovellusmalli/'
