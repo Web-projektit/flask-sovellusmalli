@@ -187,4 +187,9 @@ login_manager.anonymous_user = AnonymousUser
 
 @login_manager.user_loader
 def load_user(user_id):
-    return User.query.get(int(user_id))
+    try:
+        return User.query.get(int(user_id))
+    except Exception as e:
+        app = current_app._get_current_object()
+        app.logger.error("load_user Exception: "+getattr(e, 'message', repr(e)))
+        return None

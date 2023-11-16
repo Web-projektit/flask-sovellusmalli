@@ -48,6 +48,7 @@ def poista_vanha_kuva(id,kuva):
         else:
             return True
     else:
+        print("POISTETAAN:"+filename)
         try:
             os.remove(filename)
         except Exception as e:
@@ -113,15 +114,15 @@ def user(username):
     print("KUVA:"+kuva)
     return render_template('user.html', user=user, kuva=kuva)
 
+
+# Tätä tarvittaisiin vain ilman profiilikuvaa
 @main.route('/edit-profile', methods=['GET', 'POST'])
 @login_required
 def edit_profile():
-    form = EditProfileForm()
+    user = User.query.get_or_404(current_user.id)
+    form = EditProfileForm(obj=user)
     if form.validate_on_submit():
-        current_user.name = form.name.data
-        current_user.location = form.location.data
-        current_user.about_me = form.about_me.data
-        db.session.add(current_user._get_current_object())
+        form.populate_obj(user)
         db.session.commit()
         flash('Your profile has been updated.')
         return redirect(url_for('.user', username=current_user.username))
@@ -130,46 +131,39 @@ def edit_profile():
     form.about_me.data = current_user.about_me
     return render_template('edit_profile.html', form=form)
 
+
 @main.route('/edit-profile-all/', methods=['GET', 'POST'])
 @login_required
 def edit_profile_all():
     # Profiili, jossa on myös profiilikuva
-    form = EditProfileForm()
+    user = User.query.get_or_404(current_user.id)    
+    form = EditProfileForm(obj=user)
     app = current_app._get_current_object()
     KUVAPALVELU = app.config['KUVAPALVELU']
     KUVAPOLKU = app.config['KUVAPOLKU']
     if form.validate_on_submit():
         # check if the post request has the file part
         kuvanimi = form.img.data
-        if kuvanimi and current_user.img:
+        if kuvanimi and current_user.img and kuvanimi != current_user.img:
             poista_vanha_kuva(current_user.id,current_user.img)
         if 'file' in request.files and file.filename != '':
             file = request.files['file']
             if file and allowed_file(file.filename):
                 # Lomakkeelta lähetettynä paikallinen tallennus,
                 # S3- ja Azure-tallennus tehty erikseen Javascriptillä
-                kuvanimi = secure_filename(file.filename)
+                kuvanimi = shorten(secure_filename(file.filename))
                 filename = tee_kuvanimi(current_user.id,kuvanimi)
                 file.save(os.path.join(KUVAPOLKU, filename))
-        current_user.name = form.name.data
-        current_user.location = form.location.data
-        current_user.about_me = form.about_me.data
-        current_user.img = kuvanimi
-        db.session.add(current_user._get_current_object())
+        form.populate_obj(user)
+        user.img = kuvanimi
+        # db.session.add(current_user._get_current_object())
         db.session.commit()
         flash('Your profile has been updated.')
-        return redirect(url_for('.user', username=current_user.username))
-    form.name.data = current_user.name
-    form.location.data = current_user.location
-    form.about_me.data = current_user.about_me
-    form.img.data = current_user.img
-    if current_user.img:
-        kuva = str(current_user.id) + '_' + current_user.img 
-        # if kuvapalvelu != 'local':
-        # kuva = os.path.join(KUVAPOLKU, kuva)
+        return redirect(url_for('.user', username=user.username))
+    if user.img:
+        kuva = tee_kuvanimi(user.id,user.img) 
     else:
         kuva = ''    
-    # return redirect(url_for('profile'))
     return render_template('edit_profile_S3.html', form=form, kuva=kuva)
 
 @main.route('/edit-profile/<int:id>', methods=['GET', 'POST'])
@@ -177,44 +171,26 @@ def edit_profile_all():
 @admin_required
 def edit_profile_admin(id):
     user = User.query.get_or_404(id)
-    form = EditProfileAdminForm(user=user)
+    form = EditProfileAdminForm(obj=user,user=user)
+    print(str(user))
     if form.validate_on_submit():
-        user.email = form.email.data
-        user.username = form.username.data
-        user.confirmed = form.confirmed.data
-        user.role = Role.query.get(form.role.data)
-        user.name = form.name.data
-        user.location = form.location.data
-        user.about_me = form.about_me.data
-        db.session.add(user)
+        form.populate_obj(user)
         db.session.commit()
         flash('The profile has been updated.')
         return redirect(url_for('.user', username=user.username))
-    form.email.data = user.email
-    form.username.data = user.username
-    form.confirmed.data = user.confirmed
-    form.role.data = user.role_id
-    form.name.data = user.name
-    form.location.data = user.location
-    form.about_me.data = user.about_me
     return render_template('edit_profile.html', form=form, user=user)
 
 
 @main.route('/edit-profile_S3', methods=['GET', 'POST'])
 @login_required
 def edit_profile_S3():
-    form = EditProfileForm()
+    user = User.query.get_or_404(current_user.id)
+    form = EditProfileForm(obj=user)
     if form.validate_on_submit():
-        current_user.name = form.name.data
-        current_user.location = form.location.data
-        current_user.about_me = form.about_me.data
-        db.session.add(current_user._get_current_object())
+        form.populate_obj(user)
         db.session.commit()
         flash('Your profile has been updated.')
         return redirect(url_for('.user', username=current_user.username))
-    form.name.data = current_user.name
-    form.location.data = current_user.location
-    form.about_me.data = current_user.about_me
     return render_template('edit_profile_S3.html', form=form)
 
 
