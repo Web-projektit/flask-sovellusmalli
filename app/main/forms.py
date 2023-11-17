@@ -27,11 +27,11 @@ class EditProfileAdminForm(FlaskForm):
         Regexp('^[A-Za-z][A-Za-z0-9 _.]*$', 0,
                'Usernames must have only letters, numbers, dots or '
                'underscores')])
-    confirmed = BooleanField('Confirmed')
     role_id = SelectField('Role', coerce=int)
     name = StringField('Real name', validators=[Length(0, 64)])
     location = StringField('Location', validators=[Length(0, 64)])
     about_me = TextAreaField('About me')
+    confirmed = BooleanField('Confirmed')
     submit = SubmitField('Submit')
 
     def __init__(self, user, *args, **kwargs):

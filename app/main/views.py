@@ -67,21 +67,13 @@ def img(filename = None):
     # Profiilikuvat Flask-sovelluskansiossa profiilikuvat,
     # paitsi oletusprofiilikuva static-kansiossa.
     # Huom. S3-kuvapalvelun toteutus on kesken
-    print("IMG:"+str(filename))
-    # app = current_app._get_current_object()
     app = current_app._get_current_object()
     KUVAPALVELU = app.config['KUVAPALVELU']
     KUVAPOLKU = app.config['KUVAPOLKU']
+    app.logger.info("IMG:"+str(filename))
     if filename is None:
         return send_from_directory('static','default_profile.png')
-    elif KUVAPALVELU == 'local':
-        basedir = os.path.abspath('.')
-        kuvapolku = os.path.join(basedir, KUVAPOLKU)
-        print("ABSOLUUTTINEN KUVAPOLKU:"+kuvapolku)
-        # Lähetä tiedosto (vain, jos se olemassa)
-        return send_from_directory(kuvapolku, filename)  
-    # elif app.config['KUVAPALVELU'] == 'AzureHome':
-    elif KUVAPALVELU == 'AzureHome':
+    elif KUVAPALVELU == 'local' or KUVAPALVELU == 'AzureHome':
         # Lähetä tiedosto (vain, jos se olemassa)
         return send_from_directory(KUVAPOLKU, filename)  
     elif KUVAPALVELU == 'Azure':

@@ -57,6 +57,7 @@ the necessary fix for required=False attributes, but will also not set the requi
       </div>
     {% endfor %}
   {% endcall %}
+
 {%- elif field.type == 'SubmitField' -%}
   {# deal with jinja scoping issues? #}
   {% set field_kwargs = kwargs %}
@@ -113,6 +114,37 @@ the necessary fix for required=False attributes, but will also not set the requi
           {% endcall %}
         {%- endif %}
 
+      {% elif field.type == 'SelectField' %}
+        {{field.label(class="form-control-label")|safe}}
+        {{field(class="form-select", **kwargs)|safe}}
+        {%- if field.description -%}
+        <small class="form-text text-muted">{{field.description|safe}}</small>
+        {%- endif %}
+
+      {% elif field.type == 'TextAreaField' %}
+        {{field.label(class="form-control-label")|safe}}
+        {{field(class="form-control" ~ (' is-invalid' if field.errors else ''), **kwargs)|safe}}
+        <div class="invalid-feedback">{{field.errors|join(', ')}}</div>
+        {%- if field.description -%}
+        <small class="form-text text-muted">{{field.description|safe}}</small>
+        {%- endif %}
+
+      {% elif field.type == 'PasswordField' %}
+        {{field.label(class="form-control-label")|safe}}
+        {{field(class="form-control" ~ (' is-invalid' if field.errors else ''), **kwargs)|safe}}
+        <div class="invalid-feedback">{{field.errors|join(', ')}}</div>
+        {%- if field.description -%}
+        <small class="form-text text-muted">{{field.description|safe}}</small>
+        {%- endif %}
+
+      {% elif field.type == 'DateField' %}
+        {{field.label(class="form-control-label")|safe}}
+        {{field(class="form-control" ~ (' is-invalid' if field.errors else ''), **kwargs)|safe}}
+        <div class="invalid-feedback">{{field.errors|join(', ')}}</div>
+        {%- if field.description -%}
+        <small class="form-text text-muted">{{field.description|safe}}</small>
+        {%- endif %}
+
       {%- else -%}
         {{field.label(class="form-control-label")|safe}}
         {% if field.type == 'FileField' %}
@@ -122,7 +154,7 @@ the necessary fix for required=False attributes, but will also not set the requi
         {% endif %}
         <div class="invalid-feedback">{{field.errors|join(', ')}}</div>
         {%- if field.description -%}
-          <small class="form-text text-muted">{{field.description|safe}}</small>
+        <small class="form-text text-muted">{{field.description|safe}}</small>
         {%- endif %}
       {%- endif %}
   </div>
