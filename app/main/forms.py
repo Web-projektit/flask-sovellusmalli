@@ -20,7 +20,9 @@ class EditProfileForm(FlaskForm):
    
 
 class EditProfileAdminForm(FlaskForm):
-    email = StringField('Email', validators=[DataRequired(), Length(1, 64),
+    # Huom. render_kw välittyy suoraan jinja2-een, ja on käytettävissä siellä
+    # field.kw['class']-ominaisuutena, ks. oma wtf.html-tiedosto.
+    email = StringField('Email',render_kw={"class":"class-focus"},validators=[DataRequired(), Length(1, 64),
                                              Email()])
     username = StringField('Username', validators=[
         DataRequired(), Length(1, 64),

@@ -73,9 +73,6 @@ def img(filename = None):
     app.logger.info("IMG:"+str(filename))
     if filename is None:
         return send_from_directory('static','default_profile.png')
-    elif KUVAPALVELU == 'local' or KUVAPALVELU == 'AzureHome':
-        # Lähetä tiedosto (vain, jos se olemassa)
-        return send_from_directory(KUVAPOLKU, filename)  
     elif KUVAPALVELU == 'Azure':
         # Azure Blob Storage, anonyymi lukuoikeus blobiin
         filename = os.path.join(KUVAPOLKU,filename)
@@ -94,7 +91,10 @@ def img(filename = None):
             app.logger.exception("Virhe kuvan lähetyksessä Azure Blob Storagesta")
             app.logger.info(e)
             abort(404)
-        
+    else:
+        # elif KUVAPALVELU == 'local' or KUVAPALVELU == 'AzureHome':
+        # Lähetä tiedosto (vain, jos se olemassa)
+        return send_from_directory(KUVAPOLKU, filename)      
     
 @main.route('/user/<username>')
 def user(username):

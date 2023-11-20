@@ -33,4 +33,8 @@ footer {
     width:300px;
     }
 
+ .class-focus:focus {
+    background-color:lightblue;
+    }   
+
 
