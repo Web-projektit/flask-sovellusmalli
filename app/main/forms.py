@@ -22,7 +22,20 @@ class EditProfileForm(FlaskForm):
 class EditProfileAdminForm(FlaskForm):
     # Huom. render_kw välittyy suoraan jinja2-een, ja on käytettävissä siellä
     # field.kw['class']-ominaisuutena, ks. oma wtf.html-tiedosto.
-    email = StringField('Email',render_kw={"class":"class-focus"},validators=[DataRequired(), Length(1, 64),
+    '''
+    field.label: The label of the form field. It can be rendered using {{ field.label }}.
+    field.type: The type of the form field (e.g., StringField, PasswordField).
+    field.name: The name attribute of the form field, which is used in the HTML <input> element.
+    field.id: The id of the form field, typically used for <label> elements and JavaScript references.
+    field.errors: A list of validation errors associated with the field.
+    field.data: The data of the field, i.e., the value entered by the user.
+    field.description: An optional description of the field, which can be set in the field definition.
+    field() or field.render_kw: The method to render the field. You can pass additional parameters or use render_kw for HTML attributes like class, style, etc.
+    field.required: A boolean indicating whether the field is required. It can be used for conditional rendering or validation messages.
+    field.value: The current value of the field.
+    '''
+
+    email = StringField('Email',render_kw={"class":"class-oma"},validators=[DataRequired(), Length(1, 64),
                                              Email()])
     username = StringField('Username', validators=[
         DataRequired(), Length(1, 64),
