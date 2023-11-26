@@ -1,17 +1,23 @@
 from flask import render_template, redirect, jsonify, url_for, abort, flash, \
-     current_app, request, send_from_directory, send_file, Response 
+     current_app, request, send_from_directory, send_file, Response, make_response
 from flask_login import login_required, current_user
+from itsdangerous import URLSafeTimedSerializer
 from . import main
 from .forms import EditProfileForm, EditProfileAdminForm
 from .. import db
 from ..models import Role, User
-from ..decorators import admin_required,debuggeri
+from ..email import send_email
+from ..decorators import admin_required,debuggeri, token_required
 import os, json, boto3
 from botocore.client import Config
 from werkzeug.utils import secure_filename
 from werkzeug.exceptions import RequestEntityTooLarge
 from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient
 # from azure.core.exceptions import ResourceNotFoundError
+# os.add_dll_directory(r"C:\Program Files\GTK3-Runtime Win64\bin")
+from flask_weasyprint import HTML, render_pdf
+from datetime import datetime
+from io import BytesIO
 
 ALLOWED_EXTENSIONS = { 'pdf', 'png', 'jpg', 'jpeg', 'gif' }
 
@@ -27,7 +33,10 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 def tee_kuvanimi(id,kuva):
-    return str(id) + '_' + kuva
+    if id and kuva:
+        return str(id) + '_' + kuva
+    else:
+        return ''
 
 def poista_vanha_kuva(id,kuva):
     kuvanimi = tee_kuvanimi(id,kuva)
@@ -56,6 +65,11 @@ def poista_vanha_kuva(id,kuva):
             return False
         else:   
             return True
+
+def generate_token(user_id):
+    app = current_app._get_current_object()
+    serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
+    return serializer.dumps({'user_id': user_id})
 
 @main.route('/')
 def index():
@@ -311,4 +325,56 @@ def save_local():
         'msg': msg,
         'virhe': virhe
         })
+
+@main.route('/pdf')
+@main.route('/pdf/<int:email>')
+@login_required
+def pdf(email=True):
+    # Tässä luodaan henkilökortti pdf-tiedostoksi, myös omaan sähköpostiin
+    year = datetime.now().year
+    user = User.query.get_or_404(current_user.id)    
+    kuva = tee_kuvanimi(user.id,user.img) 
+    voimassa = str(year) + u"–" + str(year + 1)
+    opetusala = "Web programming"
+    html = render_template('henkilokortti.html', user=user, kuva=kuva, voimassa=voimassa, opetusala=opetusala)
+    # return html
+    pdf = render_pdf(HTML(string=html))
+    if email:
+        pdf_stream = BytesIO(pdf.data)
+        send_email(user.email, 'Henkilökortti','mail/henkilokortti',pdf_stream,"henkilokortti.pdf",user=user)
+        flash("Henkilökortti on lähetetty sähköpostiisi.") 
+        return redirect(url_for('.user', username=user.username))
+    else:
+        return pdf
+    
+
+@main.route('/henkilokortti')
+@token_required
+def henkilokortti(user_id):
+# Tässä haetaan henkilökortti tokenin avulla    
+    year = datetime.now().year
+    user = User.query.get_or_404(user_id)    
+    kuva = tee_kuvanimi(user.id,user.img) 
+    voimassa = str(year) + u"–" + str(year + 1)
+    opetusala = "Web programming"
+    html = render_template('henkilokortti.html', user=user, kuva=kuva, voimassa=voimassa, opetusala=opetusala)
+    pdf = render_pdf(HTML(string=html))
+    pdf_stream = BytesIO(pdf.data)
+
+    # Set the response with the PDF stream
+    response = make_response(pdf_stream.getvalue())
+    response.headers['Content-Type'] = 'application/pdf'
+    response.headers['Content-Disposition'] = 'inline; filename=henkilokortti.pdf'
+    return response
+
+@main.route('/henkilokortti_token')
+@main.route('/henkilokortti_token/<int:user_id>')
+@login_required
+def henkilokortti_token(user_id=None):
+# Tässä luodaan token henkilökortin hakemista varten
+    if user_id is None:
+        user_id = current_user.id
+    token = generate_token(user_id)   
+    return jsonify({'token': token})
+
 

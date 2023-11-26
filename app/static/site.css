@@ -33,8 +33,18 @@ footer {
     width:300px;
     }
 
+.logo {
+    margin:4px 0;
+    border:1px solid gray;
+    width:50px;
+    }
+
  .class-oma:hover {
     background-color:lightblue;
     }   
 
+.tee-henkilokortti {
+    margin:10px 0;
+    display:block;
+    }    
 

@@ -48,7 +48,7 @@ def page_not_allowed(e):
         # login_url = url_for('login', confirm_token=confirm_token, _external=True)
         redirect_url = app.config['REACT_LOGIN'] + "?next=" + request.path
         return redirect(redirect_url)
-    message = {'virhe':'Kirjautuminen puuttuu.'}
+    message = {'virhe':'Pääsy epäonnistui.'}
     return createResponse(message)
 
 

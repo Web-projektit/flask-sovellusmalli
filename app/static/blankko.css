@@ -1,0 +1,74 @@
+html, body {
+font-size: 32px;
+}
+
+body {
+height: fit-content;
+}
+
+.content {  
+padding-bottom: 10px;
+}
+
+footer span, .page-header h1 {
+white-space: nowrap;
+}
+
+
+.profiilikuva {
+display:block;    
+margin:20px auto;
+border:1px solid gray;
+max-height: 500px;
+width: auto;
+}
+
+.logo-part {
+width:100%;    
+display: flex;
+align-items: flex-start;
+gap: 10px; 
+/* border: 1px solid gray; */
+}
+
+.logo-image {
+margin:4px 0;
+min-width: 75px;
+width: 20%;
+}
+
+.logo-image img {
+width: 100%;
+}
+
+.logo-text {
+margin:1em 0;
+padding-right:10px;
+line-height: 1.2em;
+font-size: 0.8em;
+}
+
+.logo-text p {
+margin-bottom:0;
+}
+
+.opettaja {
+margin: 4px 0 0 0;
+text-align: center;
+border: 1px solid gray;
+padding: 4px 10px;
+width: 100%;
+}   
+
+.opettajateksti {
+margin-bottom: 0;
+white-space: nowrap;
+/* font-weight: 800; */ /* bold:700 */
+}   
+
+
+@media print {
+    .hide-in-pdf {
+        display: none;
+    }
+}

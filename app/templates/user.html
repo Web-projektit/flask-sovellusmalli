@@ -31,5 +31,31 @@
         <a class="btn btn-danger" href="{{ url_for('.edit_profile_admin', id=user.id) }}">Edit Profile [Admin]</a>
         {% endif %}
     </p>
+    <a class="tee-henkilokortti" href="{{ url_for('main.pdf', email=False) }}">Näytä henkilökortti</a>
+    <a class="tee-henkilokortti" href="#" onclick="fetchAndCopyLink(); return false;">Hae linkki henkilökorttiin</a>
+
 </div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+url = "{{ url_for('main.henkilokortti_token') }}" 
+linkki = "{{ url_for('main.henkilokortti', _external=True) }}"    
+const fetchAndCopyLink = () => {
+fetch(url)  //Huom. user_id haetaan palvelin-sessiosta
+.then(response => response.json())
+.then(data => {
+    token = data.token;
+    const textarea = document.createElement('textarea');
+    textarea.value = `${linkki}?token=${token}`;
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textarea);
+    alert(`Linkki on kopioitu leikepöydälle.`);
+    })
+.catch(error => console.error('Virhe:', error));
+}  
+</script>
 {% endblock %}

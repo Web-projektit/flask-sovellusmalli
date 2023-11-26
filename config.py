@@ -30,7 +30,9 @@ class Config:
     CORS_HEADERS = 'Content-Type'
     FS_POSTS_PER_PAGE = 25
     KUVAPALVELU = 'local'
-    KUVAPOLKU = os.path.join(os.path.abspath('.'),'profiilikuvat/')
+    # KUVAPOLKU = os.path.join(os.path.abspath('.'),'profiilikuvat/')
+    KUVAPOLKU = os.path.join(os.path.dirname(__file__),'profiilikuvat/')
+  
     MAX_CONTENT_LENGTH = 2 * 1000 * 1000
     # AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
     # AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
@@ -176,5 +178,5 @@ config = {
     # 'azureomnia': AzureOmniaConfig,
     'azureomniahome': AzureOmniaHomeConfig,
     'azurestatic': AzureStaticConfig,
-    'default': DevelopmentConfig
+    'default': LocalConfig
 }

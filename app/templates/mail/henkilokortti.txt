@@ -1,0 +1,8 @@
+{{ user.username }}
+Ohessa on uusi henkilökorttisi.
+
+Ystävällisin terveisin,
+Asiakaspalvelu, Flask-sovellus
+
+Huom: Älä vastaa tähän viestiin.
+

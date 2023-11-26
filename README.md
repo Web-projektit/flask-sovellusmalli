@@ -22,4 +22,7 @@ Tietokannan päivitys ilman edellistä versiota:
 4.   flask db migrate
 5.   flask db upgrade
 
+Huom. waitress-palvelin ei näyttäisi hyväksyvän tavuviivaa tiedoston nimessä. Tämän vuoksi flask-sovellus.py täytyy kopioida sitä varten
+flasksovellus.py-nimiseksi.
+
 Tekijä: Jukka Aula
