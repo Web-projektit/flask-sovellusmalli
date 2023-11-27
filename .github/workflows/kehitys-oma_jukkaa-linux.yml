@@ -32,7 +32,6 @@ jobs:
           pip install -r requirements.txt
           pip install gobject
           pip install pycairo
-          pip install PyGObject
         
       # Optional: Add step to run tests here (PyTest, Django test suites, etc.)
 
