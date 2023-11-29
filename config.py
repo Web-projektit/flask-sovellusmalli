@@ -69,7 +69,8 @@ class LocalConfig(Config):
     DB_USERNAME = os.environ.get('LOCAL_DB_USERNAME') or 'root'
     DB_PASSWORD = os.environ.get('LOCAL_DB_PASSWORD') or ''
     DB_NAME = os.environ.get('LOCAL_DB_NAME') or 'flask_sovellusmalli'
-    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://' + DB_USERNAME + ':' + DB_PASSWORD + '@localhost:3306/' + DB_NAME
+    DB_SERVER = os.environ.get('LOCAL_DB_SERVER') or 'localhost'
+    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://' + DB_USERNAME + ':' + DB_PASSWORD + '@' + DB_SERVER + ':3306/' + DB_NAME
     # Kaikki SQL-kyselyt tulostetaan konsoliin, vrt. SQLALCHEMY_ECHO = "debug"
     # SQLALCHEMY_ECHO = True
     WTF_CSRF_ENABLED = True
@@ -78,6 +79,13 @@ class LocalConfig(Config):
     REACT_LOGIN = REACT_ORIGIN + 'login'
     REACT_UNCONFIRMED = REACT_ORIGIN + 'unconfirmed'
     REACT_CONFIRMED = REACT_ORIGIN + 'confirmed'
+
+class LocalDockerConfig(LocalConfig):
+    DB_USERNAME = LocalConfig.DB_USERNAME
+    DB_PASSWORD = LocalConfig.DB_PASSWORD
+    DB_NAME = LocalConfig.DB_NAME
+    DB_SERVER = os.environ.get('LOCAL_DOCKER_DB_SERVER') or 'host.docker.internal'
+    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://' + DB_USERNAME + ':' + DB_PASSWORD + '@' + DB_SERVER + ':3306/' + DB_NAME
 
 class DevelopmentConfig(LocalConfig):
     KUVAPALVELU = 'S3'
@@ -172,6 +180,7 @@ config = {
     'testing': TestingConfig,
     'production': ProductionConfig,
     'local': LocalConfig,
+    'localdocker': LocalDockerConfig,
     'xampp': XamppConfig,
     'heroku': HerokuConfig,
     'azure': AzureConfig,
