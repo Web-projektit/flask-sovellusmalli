@@ -27,6 +27,7 @@ jobs:
         context: '.'
         push: true
         tags: 'flasksovellusmalli.azurecr.io/flask-sovellusmalli-docker:latest' # Replace with your ACR name
+        log_level: debug
 
     - name: 'Login to Azure'
       uses: azure/login@v1
