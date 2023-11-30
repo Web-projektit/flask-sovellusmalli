@@ -1,3 +1,4 @@
+# Kommentti: Tämä on GitHub Actions -tiedosto, joka käynnistää Docker-kontin rakentamisen ja julkaisun Azure Container Registryyn sekä julkaisun Azure App Serviceen. Tiedosto on kopioitu mallista
 name: Build and Deploy to Azure
 
 on:
