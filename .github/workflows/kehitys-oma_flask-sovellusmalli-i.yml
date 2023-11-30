@@ -4,7 +4,7 @@ name: Build and Deploy to Azure
 on:
   push:
     branches:
-      - main  # replace with your branch name
+      - kehitys-oma  # replace with your branch name
 
 jobs:
   build-and-deploy:
