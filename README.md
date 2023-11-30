@@ -25,4 +25,6 @@ Tietokannan päivitys ilman edellistä versiota:
 Huom. waitress-palvelin ei näyttäisi hyväksyvän tavuviivaa tiedoston nimessä. Tämän vuoksi flask-sovellus.py täytyy kopioida sitä varten
 flasksovellus.py-nimiseksi.
 
+Tässä on mukana Dockerfile ja se toimii Azuressa.
+
 Tekijä: Jukka Aula
