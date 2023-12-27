@@ -246,7 +246,7 @@ def confirm(token):
         # return redirect(redirect_url)
         if request.headers.get('Referer'):
             # Kirjautumisen kautta
-            return jsonify({'ok':"OK",'message':message})
+            return jsonify({'ok':"OK",'message':message, 'confirmed':'1'})
         else:
             # Sähköpostilinkin kautta suoraan
             app.logger.debug('\n/confirm,REACT_CONFIRMED:' + app.config['REACT_CONFIRMED']+'\n')
