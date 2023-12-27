@@ -65,7 +65,8 @@ def normalize_csrf_header():
         # Huom. request.headersiä ei voi muuttaa suoraan:
         # request.headers['X-CSRFToken'] = csrf_header
         request.environ['HTTP_X_CSRFTOKEN'] = csrf_header
-'''        
+    '''    
+                
 
 @reactapi.before_request
     # Huom. 
@@ -175,6 +176,8 @@ def signin():
                     return jsonify({'ok':'OK'})
             return redirect(next)
         else:
+            query = str(User.query.filter_by(email=form.email.data.lower()).first())
+            sys.stderr.write(f"\nviews.py,SIGNIN, query:{query}\n")
             response = jsonify({'virhe':'Väärät tunnukset'})
             # response.status_code = 200
             return response 
@@ -222,7 +225,7 @@ def unconfirmed():
 
 
 @reactapi.route('/confirm/<token>')
-# Määritetään CORS-alustuksessa
+# CORS määritetään alustuksessa tai tässä
 # @cross_origin(supports_credentials=True)
 @login_required
 # Huom. login_required vie login-sivulle, ja kirjautuminen takaisin tänne
@@ -246,7 +249,7 @@ def confirm(token):
         # return redirect(redirect_url)
         if request.headers.get('Referer'):
             # Kirjautumisen kautta
-            return jsonify({'ok':"OK",'message':message})
+            return jsonify({'ok':"OK",'message':message, 'confirmed':'1'})
         else:
             # Sähköpostilinkin kautta suoraan
             app.logger.debug('\n/confirm,REACT_CONFIRMED:' + app.config['REACT_CONFIRMED']+'\n')
@@ -316,14 +319,14 @@ def tallennaProfiili():
             "user.email:",user.email,'\n'\
             "current_user.email:",current_user.email,'\n'\
             "form.email.data.lower():",form.email.data.lower(),'\n')
-        '''
-        Huom. 
-        user-objektin muutokset näkyvät myös current_user-objektissa
-        db.session.add(user)-komentoa ei tarvita
-        vrt. 
-        form.populate_obj(user) tai form.populate_obj(current_user)
-        form = ProfileForm(obj=user)
-        '''
+        
+        # Huom. 
+        # user-objektin muutokset näkyvät myös current_user-objektissa
+        # db.session.add(user)-komentoa ei tarvita
+        # vrt. 
+        # form.populate_obj(user) tai form.populate_obj(current_user)
+        # form = ProfileForm(obj=user)
+        
         if current_user.email != form.email.data.lower():
             print("tallennaProfiili, uusi sähköpostiosoite")
             user.confirmed = False
@@ -350,9 +353,8 @@ def tallennaProfiili():
         response.status_code = 200
         return response
 
-'''
+
 # Handle all other routes by serving the React app's index.html file
-@reactapi.route('/<path:path>')
-def serve_other_routes(path):
-    return send_from_directory(react_polku, 'index.html')
-'''
+# @reactapi.route('/<path:path>')
+# def serve_other_routes(path):
+#    return send_from_directory(react_polku, 'index.html')

@@ -4,6 +4,7 @@ from itsdangerous import URLSafeTimedSerializer as Serializer
 from flask import current_app
 from flask_login import UserMixin, AnonymousUserMixin
 from . import db, login_manager
+import sys
 
 class Permission:
     FOLLOW = 1
@@ -100,6 +101,8 @@ class User(UserMixin, db.Model):
         self.password_hash = generate_password_hash(password)
 
     def verify_password(self, password):
+        temp = check_password_hash(self.password_hash, password)
+        sys.stderr.write(f"{self.password_hash} vs. {password}: {temp}\n")
         return check_password_hash(self.password_hash, password)
 
     def generate_confirmation_token(self):
