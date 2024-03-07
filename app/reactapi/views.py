@@ -4,6 +4,7 @@ from flask import render_template, redirect, request, \
 from flask_login import (
     login_user,logout_user, 
     login_required, current_user )
+from datetime import datetime
 from . import reactapi
 from .. import db
 from ..models import User
@@ -197,7 +198,8 @@ def signup():
     if form.validate_on_submit():
         user = User(email=form.email.data.lower(),
                     username=form.username.data,
-                    password=form.password.data)
+                    password=form.password.data,
+                    member_since = datetime.utcnow())
         db.session.add(user)
         db.session.commit()
         token = user.generate_confirmation_token()

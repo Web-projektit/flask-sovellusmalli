@@ -3,6 +3,19 @@
 {% block title %}Henkilökortti{% endblock %}
 
 {% block page_content %}
+<style> /* use CSS into style */
+    @page {
+      /* size: A5; Change from the default size of A4 */
+      width: 637.5px; /* 210mm */
+      height: 1011px; /* 297mm */
+      margin: 10mm; /* Set margin on each page */
+      }
+    .profiilikuva{
+      height: auto;
+      width: 100%;
+      margin: 4px auto;
+     }            
+</style>
 <div class="logo-part">
 <div class="logo-image"><img src="{{ url_for('static',filename='omniamusta_eitaustaa.png') }}" alt="Logo"></div>
 <div class="logo-text">
@@ -21,6 +34,7 @@
 {% else %}
 <img class="profiilikuva" onclick="alert(this.src)" id="preview" src="{{ url_for('main.img',filename=kuva) }}">
 {% endif %}
+
 <div class="tiedot" id="tiedot">
 <div>{{ user.name }}</div>
 <div>{{ user.about_me }}</div>

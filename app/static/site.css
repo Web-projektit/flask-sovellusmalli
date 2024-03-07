@@ -28,7 +28,7 @@ footer {
   }
 
 .profiilikuva {
-    margin:4px 0;
+    margin:4px auto;
     border:1px solid gray;
     width:300px;
     }
